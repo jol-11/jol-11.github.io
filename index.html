@@ -20,6 +20,37 @@
             overflow: hidden;
         }
 
+        /* 1. 專屬名字簽名區域 (JOLINE CHU) */
+        .brand-signature {
+            position: absolute;
+            top: 40px;
+            left: 50px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .brand-signature h1 {
+            /* 引入古典羅馬襯線體，模擬 Goldoni 的優雅與歷史感 */
+            font-family: 'Times New Roman', Times, 'Georgia', serif;
+            font-size: 1.8rem;
+            margin: 0;
+            letter-spacing: 5px;
+            font-weight: bold;
+            /* 復古微金屬光澤效果 */
+            color: #c5b4a0;
+            background: linear-gradient(135deg, #dfd5c6 0%, #b39f88 50%, #8c765c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            opacity: 0.9;
+        }
+        .brand-signature p {
+            margin: 5px 0 0 2px;
+            font-size: 0.65rem;
+            color: rgba(213, 201, 185, 0.4);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
         /* 點擊外圍復原的隱形背景遮罩 */
         .bg-overlay {
             position: absolute;
@@ -40,6 +71,7 @@
             align-items: center;
             justify-content: center;
             z-index: 2;
+            margin-top: 40px; /* 給頂部名字留出一點空間 */
         }
 
         /* 通用文件夾樣式 */
@@ -64,7 +96,7 @@
             height: 100%;
             background-size: cover;
             background-position: center;
-            filter: brightness(0.75) contrast(1.1);
+            filter: brightness(0.7) contrast(1.15);
             transition: filter 0.5s;
         }
         
@@ -80,14 +112,14 @@
         .folder-journey .folder-bg {
             background-image: url('222.jpg');
         }
-        .folder-collection .folder-bg {
+        .folder-collections .folder-bg {
             background-image: url('333.jpg');
         }
 
         /* 文件夾疊加位置 */
         .folder-about { left: 10%; z-index: 10; }
         .folder-journey { left: 33%; z-index: 20; }
-        .folder-collection { left: 56%; z-index: 30; }
+        .folder-collections { left: 56%; z-index: 30; }
 
         /* 文件夾側邊實體標籤 (Tabs) */
         .file-tab {
@@ -126,7 +158,7 @@
             flex-direction: column;
             justify-content: space-between;
             z-index: 3;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 40%, rgba(0,0,0,0.6) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 40%, rgba(0,0,0,0.7) 100%);
         }
         
         .folder-meta h2 {
@@ -145,14 +177,14 @@
 
         /* --- 核心互動狀態 --- */
 
-        /* 點擊一次拉出：向前並向上微移 */
+        /* 點擊一次拉出 */
         .file-folder.pulled-out {
             transform: translate(-30px, -30px);
             box-shadow: -25px 25px 60px rgba(0, 0, 0, 0.8);
             z-index: 50;
         }
 
-        /* 點擊第二次打開：放大淡出 */
+        /* 點擊第二次打開 */
         .file-folder.opened {
             transform: translate(-80px, -30px) scale(1.15);
             opacity: 0;
@@ -163,7 +195,7 @@
         .info-tip {
             position: absolute;
             bottom: 30px;
-            color: rgba(213,201,185,0.3);
+            color: rgba(213,201,185,0.25);
             font-size: 0.7rem;
             letter-spacing: 2px;
             pointer-events: none;
@@ -171,6 +203,11 @@
     </style>
 </head>
 <body>
+
+    <div class="brand-signature">
+        <h1>JOLINE CHU</h1>
+        <p>Private Digital Cabinet</p>
+    </div>
 
     <div class="bg-overlay" id="overlay"></div>
 
@@ -204,18 +241,18 @@
             <div class="file-tab" style="top: 190px;"><span>MY JOURNEY</span></div>
         </div>
 
-        <div class="file-folder folder-collection" data-link="collection.html">
+        <div class="file-folder folder-collections" data-link="collections.html">
             <div class="folder-bg"></div>
             <div class="folder-meta">
                 <div>
                     <div class="code-num">CODE__003 // SIGNAL</div>
-                    <h2>COLLECTION</h2>
+                    <h2>COLLECTIONS</h2>
                 </div>
                 <div style="font-size: 0.75rem; opacity: 0.7;">
                     /// AFTER WORK CREATIVE
                 </div>
             </div>
-            <div class="file-tab" style="top: 340px;"><span>COLLECTION</span></div>
+            <div class="file-tab" style="top: 340px;"><span>COLLECTIONS</span></div>
         </div>
 
     </div>
