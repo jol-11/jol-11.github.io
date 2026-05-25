@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JOL's Archive</title>
     <style>
-        /* 全局美學設定：參考 111, 222, 333 的暗色復古拼貼調性 */
+        /* 全局深色粗糙基底 */
         body {
             margin: 0;
             padding: 0;
-            background-color: #1a1917; /* 深色粗糙質感底色 */
-            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 0); /* 微弱的數字噪點感 */
+            background-color: #121110;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 0);
             background-size: 4px 4px;
             font-family: 'Courier New', Courier, monospace, 'PingFang TC';
             height: 100vh;
@@ -33,140 +33,139 @@
         /* 文件夾櫃主容器 */
         .cabinet-wrapper {
             position: relative;
-            width: 90vw;
-            max-width: 800px;
-            height: 550px;
+            width: 85vw;
+            max-width: 850px;
+            height: 580px;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2;
         }
 
-        /* 通用文件夾樣式 (側放垂直排列，疊加層次) */
+        /* 通用文件夾樣式 */
         .file-folder {
             position: absolute;
             height: 100%;
-            width: 320px; /* 露出側面的大面積 */
-            border-radius: 4px 20px 20px 4px;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+            width: 360px;
+            border-radius: 4px 16px 16px 4px;
+            box-shadow: -15px 10px 40px rgba(0, 0, 0, 0.6);
             transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s;
             cursor: pointer;
             overflow: hidden;
-            border-left: 2px solid rgba(255,255,255,0.1);
+            border-left: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* --- 每個文件夾的獨立拼貼藝術風格 (參考圖111, 222, 333) --- */
+        /* 讓圖片完美覆蓋文件夾封面，並加上一層暗色濾鏡沉澱質感 */
+        .folder-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.75) contrast(1.1);
+            transition: filter 0.5s;
+        }
         
-        /* 1. ABOUT ME (結構幾何與古典拼貼風) */
-        .folder-about {
-            background: linear-gradient(to right, #2b2a27, #3a3835);
-            left: 10%;
-            z-index: 10;
-        }
-        /* 幾何線條裝飾 (仿圖111) */
-        .folder-about::after {
-            content: '';
-            position: absolute;
-            top: 10%; left: 10%; width: 80%; height: 80%;
-            border: 1px solid rgba(213, 201, 185, 0.2);
-            border-radius: 50%;
-            pointer-events: none;
+        /* 當文件夾被抽出時，圖片恢復原本的藝術色彩 */
+        .file-folder.pulled-out .folder-bg {
+            filter: brightness(0.95) contrast(1.1);
         }
 
-        /* 2. MY JOURNEY (數字噪點與高對比植物反差風) */
-        .folder-journey {
-            background: linear-gradient(to right, #1e222a, #282e3b);
-            left: 35%;
-            z-index: 20;
+        /* --- 套用你上傳的 111, 222, 333 圖片 --- */
+        .folder-about .folder-bg {
+            background-image: url('111.jpg');
         }
-        /* 縱向文字排版 (仿圖1) */
-        .vertical-text {
-            position: absolute;
-            left: 25px;
-            top: 40px;
-            writing-mode: vertical-rl;
-            color: #8a939e;
-            font-size: 0.8rem;
-            letter-spacing: 4px;
+        .folder-journey .folder-bg {
+            background-image: url('222.jpg');
+        }
+        .folder-collection .folder-bg {
+            background-image: url('333.jpg');
         }
 
-        /* 3. COLLECTION (暗黑素描與雜色膠片風) */
-        .folder-collection {
-            background: linear-gradient(to right, #242621, #191b17);
-            left: 60%;
-            z-index: 30;
-        }
+        /* 文件夾疊加位置 */
+        .folder-about { left: 10%; z-index: 10; }
+        .folder-journey { left: 33%; z-index: 20; }
+        .folder-collection { left: 56%; z-index: 30; }
 
-        /* 文件夾側邊標籤 (Tabs) */
+        /* 文件夾側邊實體標籤 (Tabs) */
         .file-tab {
             position: absolute;
             top: 40px;
-            right: -5px;
-            width: 35px;
+            right: 0;
+            width: 38px;
             height: 140px;
-            background-color: inherit;
-            border-radius: 0 10px 10px 0;
-            border: 1px solid rgba(255,255,255,0.15);
+            background-color: #1e1d1b; /* 沉穩的深木色/紙質色標籤 */
+            border-radius: 0 8px 8px 0;
+            border: 1px solid rgba(255,255,255,0.1);
             border-left: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.4);
+            z-index: 5;
         }
         .file-tab span {
             writing-mode: vertical-rl;
             color: #d5c9b9;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
             font-weight: bold;
+            opacity: 0.8;
         }
 
-        /* 封面內部排版與偽圖片拼貼 */
+        /* 封面文字與排版 */
         .folder-meta {
-            padding: 40px 50px 40px 40px;
-            color: #d5c9b9;
+            position: relative;
+            padding: 35px;
+            color: #fff;
             height: 100%;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            z-index: 3;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 40%, rgba(0,0,0,0.6) 100%);
         }
+        
         .folder-meta h2 {
-            font-size: 1.6rem;
-            margin: 0;
-            letter-spacing: 1px;
-            border-bottom: 1px solid rgba(213,201,185,0.3);
-            padding-bottom: 10px;
+            font-size: 1.8rem;
+            margin: 5px 0 0 0;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+            font-weight: 400;
         }
         .code-num {
             font-size: 0.7rem;
-            opacity: 0.5;
-            margin-bottom: 5px;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
-        /* --- 核心動態效果 --- */
+        /* --- 核心互動狀態 --- */
 
-        /* 狀態一：點擊一次拉出 (向左靠攏並放大，凸顯選中感) */
+        /* 點擊一次拉出：向前並向上微移 */
         .file-folder.pulled-out {
-            transform: translate(-40px, -20px) scale(1.03);
-            box-shadow: -20px 20px 50px rgba(0, 0, 0, 0.7);
-            z-index: 50; /* 確保被抽出的文件夾在最上層 */
+            transform: translate(-30px, -30px);
+            box-shadow: -25px 25px 60px rgba(0, 0, 0, 0.8);
+            z-index: 50;
         }
 
-        /* 狀態二：點擊第二次打開 (優雅淡出並放大) */
+        /* 點擊第二次打開：放大淡出 */
         .file-folder.opened {
-            transform: translate(-100px, -20px) scale(1.2);
+            transform: translate(-80px, -30px) scale(1.15);
             opacity: 0;
             transition: all 0.4s ease-in;
         }
 
-        /* 基礎提示 */
+        /* 底部提示 */
         .info-tip {
             position: absolute;
             bottom: 30px;
-            color: rgba(213,201,185,0.4);
-            font-size: 0.75rem;
-            letter-spacing: 1px;
+            color: rgba(213,201,185,0.3);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
             pointer-events: none;
         }
     </style>
@@ -178,26 +177,27 @@
     <div class="cabinet-wrapper">
 
         <div class="file-folder folder-about" data-link="about.html">
+            <div class="folder-bg"></div>
             <div class="folder-meta">
                 <div>
                     <div class="code-num">CODE__001 // ARCHIVE</div>
                     <h2>ABOUT ME</h2>
                 </div>
-                <div style="font-size: 0.8rem; opacity: 0.6; line-height: 1.5;">
-                    [ VISUAL STUDIES ]<br>TYPE : IDENTITY
+                <div style="font-size: 0.75rem; opacity: 0.7;">
+                    TYPE : IDENTITY
                 </div>
             </div>
             <div class="file-tab"><span>ABOUT ME</span></div>
         </div>
 
         <div class="file-folder folder-journey" data-link="journey.html">
-            <div class="vertical-text">DIARY LOG : 2026_RED</div>
-            <div class="folder-meta" style="align-items: flex-end; text-align: right;">
+            <div class="folder-bg"></div>
+            <div class="folder-meta">
                 <div>
                     <div class="code-num">CODE__002 // FALLING</div>
                     <h2>MY JOURNEY</h2>
                 </div>
-                <div style="font-size: 0.8rem; opacity: 0.6; width: 100%;">
+                <div style="font-size: 0.75rem; opacity: 0.7;">
                     [ TIMELINE.LOG ]
                 </div>
             </div>
@@ -205,12 +205,13 @@
         </div>
 
         <div class="file-folder folder-collection" data-link="collection.html">
+            <div class="folder-bg"></div>
             <div class="folder-meta">
                 <div>
                     <div class="code-num">CODE__003 // SIGNAL</div>
                     <h2>COLLECTION</h2>
                 </div>
-                <div style="font-size: 0.8rem; opacity: 0.4;">
+                <div style="font-size: 0.75rem; opacity: 0.7;">
                     /// AFTER WORK CREATIVE
                 </div>
             </div>
@@ -219,18 +220,17 @@
 
     </div>
 
-    <div class="info-tip">CLICK ONCE TO EXTRACT / CLICK AGAIN TO OPEN</div>
+    <div class="info-tip">CLICK ONCE TO EXTRACT // CLICK AGAIN TO OPEN</div>
 
     <script>
         const folders = document.querySelectorAll('.file-folder');
         const overlay = document.getElementById('overlay');
-        let activeFolder = null; // 紀錄當前被抽出的文件夾
+        let activeFolder = null;
 
         folders.forEach(folder => {
             folder.addEventListener('click', (e) => {
-                e.stopPropagation(); // 防止事件冒泡到 overlay
+                e.stopPropagation();
 
-                // 如果點擊的是「已經被抽出」的文件夾 -> 觸發打開分頁
                 if (activeFolder === folder) {
                     folder.classList.add('opened');
                     const target = folder.getAttribute('data-link');
@@ -240,16 +240,12 @@
                     return;
                 }
 
-                // 如果點擊的是別的文件夾，先復原當前抽出的
                 resetFolders();
-
-                // 讓當前點擊的文件夾「抽出」
                 folder.classList.add('pulled-out');
                 activeFolder = folder;
             });
         });
 
-        // 點擊背景空白處，復原所有文件夾
         overlay.addEventListener('click', resetFolders);
 
         function resetFolders() {
