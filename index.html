@@ -1,10 +1,287 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
-    <title>My Photography</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOL's Cabinet | 我的數位文件夾</title>
+    <style>
+        :root {
+            --bg-color: #eaddca; /* 復古牛皮紙感底色 */
+            --folder-about: #dfaba0; /* ABOUT ME 文件夾顏色 */
+            --folder-journey: #bc9b8b; /* MY JOURNEY 文件夾顏色 */
+            --folder-collection: #a3b899; /* COLLECTION 文件夾顏色 */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'PingFang TC', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            perspective: 1000px; /* 啟動 3D 空間感 */
+        }
+
+        /* 提示字型 */
+        .hint {
+            position: absolute;
+            top: 5%;
+            text-align: center;
+            color: #5a4d41;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            pointer-events: none;
+            line-height: 1.6;
+        }
+
+        /* 文件夾櫃容器 */
+        .cabinet-container {
+            width: 80vw;
+            max-width: 600px;
+            height: 450px;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: grab;
+        }
+        .cabinet-container:active {
+            cursor: grabbing;
+        }
+
+        /* 文件夾通用樣式 */
+        .folder {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-radius: 15px 40px 15px 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), top 0.4s ease;
+            transform-style: preserve-3d;
+            user-select: none;
+        }
+
+        /* 文件夾標籤 (Tab) 區分 */
+        .folder::before {
+            content: attr(data-title);
+            position: absolute;
+            top: -35px;
+            height: 35px;
+            padding: 5px 30px 0 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #fff;
+            border-radius: 10px 20px 0 0;
+            display: flex;
+            align-items: center;
+            letter-spacing: 1px;
+            box-shadow: 0 -5px 10px rgba(0,0,0,0.05);
+        }
+
+        /* 三個分頁各自的顏色與標籤位置 */
+        .folder.about { 
+            background-color: var(--folder-about); 
+            z-index: 3;
+        }
+        .folder.about::before { 
+            background-color: var(--folder-about); 
+            left: 20px; 
+        }
+
+        .folder.journey { 
+            background-color: var(--folder-journey); 
+            z-index: 2;
+        }
+        .folder.journey::before { 
+            background-color: var(--folder-journey); 
+            left: 160px; 
+        }
+
+        .folder.collection { 
+            background-color: var(--folder-collection); 
+            z-index: 1;
+        }
+        .folder.collection::before { 
+            background-color: var(--folder-collection); 
+            left: 310px; 
+        }
+
+        /* 文件夾內頁的封面裝飾 */
+        .folder-content {
+            padding: 40px;
+            color: #fff;
+            pointer-events: none; /* 避免干擾點擊事件 */
+        }
+        .folder-content h2 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.4);
+            padding-bottom: 10px;
+        }
+
+        /* --- 互動狀態的 CSS 樣式 --- */
+
+        /* 1. 翻頁效果 (未被選中的往後翻/隱藏) */
+        .folder.hide-left {
+            transform: translateX(-100%) rotateY(-45deg) scale(0.8);
+            opacity: 0;
+            z-index: 0;
+        }
+        .folder.hide-right {
+            transform: translateX(100%) rotateY(45deg) scale(0.8);
+            opacity: 0;
+            z-index: 0;
+        }
+
+        /* 2. 第一次點擊：抽出效果 */
+        .folder.pulled-out {
+            top: -60px; /* 向上抽出 */
+            box-shadow: 0 25px 40px rgba(0,0,0,0.25);
+        }
+
+        /* 3. 第二次點擊：打開放大效果 */
+        .folder.opened {
+            transform: scale(1.5) translateZ(100px);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to My Photography Portfolio</h1>
-    <p>Hello World!</p>
+
+    <div class="hint">
+        ← 左右滑動鼠標翻閱文件夾 →<br>
+        點擊 1 次抽出文件夾 / 點擊 2 次進入頁面
+    </div>
+
+    <div class="cabinet-container" id="cabinet">
+        
+        <div class="folder about" data-title="ABOUT ME" data-link="about.html">
+            <div class="folder-content">
+                <h2>ABOUT ME</h2>
+                <p>關於我、我的理念與自我介紹。</p>
+            </div>
+        </div>
+
+        <div class="folder journey" data-title="MY JOURNEY" data-link="journey.html">
+            <div class="folder-content">
+                <h2>MY JOURNEY</h2>
+                <p>生活紀錄、成長軌跡與時間軸。</p>
+            </div>
+        </div>
+
+        <div class="folder collection" data-title="COLLECTION" data-link="collection.html">
+            <div class="folder-content">
+                <h2>COLLECTION</h2>
+                <p>作品集、攝影與珍藏物件。</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const cabinet = document.getElementById('cabinet');
+        const folders = Array.from(document.querySelectorAll('.folder'));
+        let currentIndex = 0; // 當前正對著使用者的文件夾索引
+        let startX = 0;
+        let isDragging = false;
+
+        // 更新文件夾在 3D 空間中的前後與翻頁狀態
+        function updateFolders() {
+            folders.forEach((folder, index) => {
+                // 重置狀態
+                folder.classList.remove('hide-left', 'hide-right', 'pulled-out');
+                
+                if (index < currentIndex) {
+                    folder.classList.add('hide-left');
+                } else if (index > currentIndex) {
+                    folder.classList.add('hide-right');
+                } else {
+                    // 當前顯示的文件夾居中
+                    folder.style.transform = 'translateX(0) rotateY(0) scale(1)';
+                    folder.style.zIndex = 10;
+                }
+            });
+        }
+
+        // --- 互動一：滑動滑鼠/手指翻頁 ---
+        cabinet.addEventListener('mousedown', (e) => {
+            startX = e.pageX;
+            isDragging = true;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            let diffX = e.pageX - startX;
+            if (Math.abs(diffX) > 80) { // 滑動超過 80 像素就翻頁
+                if (diffX > 0 && currentIndex > 0) {
+                    currentIndex--; // 向右滑，看前一張
+                } else if (diffX < 0 && currentIndex < folders.length - 1) {
+                    currentIndex++; // 向左滑，看下一張
+                }
+                updateFolders();
+                isDragging = false; // 翻頁後暫停，避免連續瘋狂翻頁
+            }
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        // 支援手機觸控滑動
+        cabinet.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].pageX;
+            isDragging = true;
+        });
+        cabinet.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            let diffX = e.touches[0].pageX - startX;
+            if (Math.abs(diffX) > 60) {
+                if (diffX > 0 && currentIndex > 0) currentIndex--;
+                else if (diffX < 0 && currentIndex < folders.length - 1) currentIndex++;
+                updateFolders();
+                isDragging = false;
+            }
+        });
+        cabinet.addEventListener('touchend', () => isDragging = false);
+
+
+        // --- 互動二：點擊抽出與打開分頁 ---
+        folders.forEach((folder) => {
+            let clickCount = 0;
+            
+            folder.addEventListener('click', (e) => {
+                // 如果點擊的不是當前最前面的文件夾，就不觸發
+                let folderIndex = folders.indexOf(folder);
+                if (folderIndex !== currentIndex) return;
+
+                clickCount++;
+
+                if (clickCount === 1) {
+                    // 第一次點擊：抽出
+                    folder.classList.add('pulled-out');
+                    
+                    // 如果抽出後 3 秒內沒點第二次，自動放回去
+                    setTimeout(() => {
+                        if (clickCount === 1) {
+                            folder.classList.remove('pulled-out');
+                            clickCount = 0;
+                        }
+                    }, 3000);
+                } else if (clickCount === 2) {
+                    // 第二次點擊：打開並跳轉
+                    folder.classList.add('opened');
+                    const targetLink = folder.getAttribute('data-link');
+                    setTimeout(() => {
+                        window.location.href = targetLink;
+                    }, 400); // 留 0.4 秒跑完放大動畫再跳轉
+                }
+            });
+        });
+
+        // 初始化
+        updateFolders();
+    </script>
 </body>
 </html>
