@@ -13,23 +13,29 @@
         .header-nav { position: absolute; top: 30px; left: 40px; z-index: 10; pointer-events: none; }
         .header-nav h1 { color: #c5b4a0; font-size: 1.6rem; letter-spacing: 4px; margin: 0; font-family: 'Times New Roman', serif; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
         .header-nav p { color: rgba(213, 201, 185, 0.5); font-size: 0.7rem; letter-spacing: 2px; margin: 5px 0 0 0; }
-        .back-btn { position: absolute; bottom: 40px; left: 40px; z-index: 10; color: #d5c9b9; text-decoration: none; font-size: 0.8rem; letter-spacing: 2px; border: 1px solid rgba(213, 201, 185, 0.3); padding: 10px 20px; border-radius: 4px; background-color: rgba(18, 17, 16, 0.8); backdrop-filter: blur(5px); transition: all 0.3s; }
+        .back-btn { position: absolute; bottom: 40px; left: 40px; z-index: 10; color: #d5c9b9; text-decoration: none; font-size: 0.8rem; letter-spacing: 2px; border: 1px solid rgba(213, 201, 185, 0.3); padding: 10px 20px; border-radius: 4px; background-color: rgba(18, 17, 16, 0.8); backdrop-filter: blur(5px); transition: all 0.3s; z-index: 10; }
         .back-btn:hover { background-color: #c5b4a0; color: #121110; box-shadow: 0 0 15px rgba(197, 180, 160, 0.4); }
 
-        /* 🔥 修正 4：換上更明顯的古典紅墨水色，既融入羊皮紙風格又能清晰與陸地區分 */
+        /* 🔥 修正 2：不使用紅色，保持原本的高級深羊皮紙印刷色，並注入多重立體陰影與白邊襯托 */
         .globe-label {
             position: absolute;
             z-index: 5;
             transform: translate(-50%, -50%);
-            color: rgba(139, 35, 35, 0.95); /* 古典學院風深朱紅墨水色 */
+            color: rgba(75, 60, 45, 0.95); /* 原本的古典深羊皮紙復古色 */
             font-family: 'Times New Roman', serif;
             font-style: italic;
             font-weight: bold;
-            font-size: 1.0rem;
-            letter-spacing: 4px;
+            font-size: 1.0rem; 
+            letter-spacing: 3px;
             pointer-events: none;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6); /* 增加微弱的亮邊底襯，確保在任何地形上都清晰 */
-            display: none;
+            /* 核心陰影優化：利用四周白邊外襯 + 右下柔和深色外陰影，確保在完全打亮的陸地上依然Scannable */
+            text-shadow: 
+                1px 1px 0px rgba(255, 255, 255, 0.9), 
+                -1px -1px 0px rgba(255, 255, 255, 0.9),  
+                1px -1px 0px rgba(255, 255, 255, 0.9),  
+                -1px 1px 0px rgba(255, 255, 255, 0.9),
+                2px 2px 4px rgba(0, 0, 0, 0.3);
+            display: none; 
             user-select: none;
         }
 
@@ -47,9 +53,10 @@
             z-index: 100;
             width: 190px;
         }
-        .custom-popup h3 { margin: 0 0 6px 0; color: #fff; font-size: 1.1rem; }
+        .custom-popup h3 { margin: 0 0 6px 0; color: #fff; font-size: 1.1rem; letter-spacing: 1px; }
         .custom-popup p { margin: 0 0 12px 0; font-size: 0.75rem; opacity: 0.8; line-height: 1.4; }
-        .custom-popup a { display: inline-block; color: #121110; background-color: #c5b4a0; text-decoration: none; font-size: 0.75rem; font-weight: bold; padding: 6px 14px; border-radius: 4px; }
+        .custom-popup a { display: inline-block; color: #121110; background-color: #c5b4a0; text-decoration: none; font-size: 0.75rem; font-weight: bold; padding: 6px 14px; border-radius: 4px; transition: background 0.2s; }
+        .custom-popup a:hover { background-color: #dfd5c6; }
     </style>
 </head>
 <body>
@@ -70,47 +77,7 @@
     </div>
 
     <script>
-        // =========================================================================
-        // 🗺️ 🔥 【核心自定義配置區】：以後你加點、改大洲，直接改下面這兩個陣列即可！
-        // =========================================================================
-        
-        // 1. 你的足跡點數據（手動增加任何地方，只需照格式複製一行，填入精確的經緯度即可）
-        const MY_TRAVEL_PINS = [
-            {
-                name: "HONG KONG",
-                lat: 22.3193, lng: 114.1694,
-                isHome: true, // true 會自動生成復古五角星
-                desc: "[ HOME BASE ]<br>記憶與起點。",
-                link: "journey/hongkong.html"
-            },
-            {
-                name: "AUSTRIA",
-                lat: 47.5162, lng: 14.5501,
-                isHome: false, // false 會自動生成復古幾何圖釘
-                desc: "[ TRACK__01 ]<br>音樂、雪山與金色黃昏的記錄。",
-                link: "journey/austria.html"
-            }
-            // 💡 未來想加新地方？直接在下面複製貼上格式即可：
-            // ,{ name: "JAPAN", lat: 35.6762, lng: 139.6503, isHome: false, desc: "東京之旅", link: "journey/tokyo.html" }
-        ];
-
-        // 2. 大洲大洋標籤數據
-        const CONTINENT_LABELS = [
-            { name: "ASIA", lat: 45.0, lng: 95.0 },
-            { name: "EUROPE", lat: 53.0, lng: 20.0 },
-            { name: "AFRICA", lat: 5.0, lng: 20.0 },
-            { name: "AUSTRALIA", lat: -25.0, lng: 133.0 },
-            { name: "INDIAN OCEAN", lat: -15.0, lng: 80.0 },
-            { name: "PACIFIC OCEAN", lat: 20.0, lng: 165.0 }
-        ];
-
-        // 3. 地球儀貼圖絕對校正補償角（單位：度）
-        // 針對標準 Three.js 球體幾何面展開與 NASA 貼圖的經度偏移量進行像素級校正
-        const MAP_ALIGN_OFFSET = -90; 
-
-        // =========================================================================
-
-        // 初始化環境
+        // 1. 初始化環境
         const container = document.getElementById('canvas_container');
         const labelsLayer = document.getElementById('labels_layer');
         const scene = new THREE.Scene();
@@ -120,19 +87,22 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // 🔥 修正 2：徹底取消白天黑夜！使用多光源 360 度無死角環繞打亮，確保所有地方都是亮的
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.4); // 大幅提高環境光，亮起來！
+        // 2. 【🔥 核心修正 1：取消白天黑夜，全方位 360 度打亮】
+        // 顯著提升環境光，消除轉動時的暗部與黑夜效果
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.3); 
         scene.add(ambientLight);
 
-        const frontLight = new THREE.DirectionalLight(0xfff5e6, 0.6); // 柔和正面光，保留精緻的微弱浮雕陰影
-        frontLight.position.set(5, 3, 5);
+        // 正面立體柔和光，保留羊皮紙法線地形的微弱雕刻立體感
+        const frontLight = new THREE.DirectionalLight(0xfff5e6, 0.4); 
+        frontLight.position.set(6, 4, 5); 
         scene.add(frontLight);
 
-        const backLight = new THREE.DirectionalLight(0xfff5e6, 0.5); // 背面補光，消除轉到背面時的黑暗黑夜
-        backLight.position.set(-5, -3, -5);
+        // 背面補光，徹底抹除任何可能產生的陰影黑夜
+        const backLight = new THREE.DirectionalLight(0xfff5e6, 0.4); 
+        backLight.position.set(-6, -4, -5); 
         scene.add(backLight);
 
-        // 材質加載
+        // 3. 質感核心：復古「手工牛皮紙黏土浮雕」材質地球
         const textureLoader = new THREE.TextureLoader();
         const colorMap = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg');
         const bumpMap = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_normal_2048.jpg');
@@ -141,18 +111,17 @@
         const material = new THREE.MeshStandardMaterial({
             map: colorMap,
             normalMap: bumpMap,          
-            normalScale: new THREE.Vector2(1.1, 1.1), 
-            color: 0xd5c9b9,              // 復古羊皮紙色調
-            roughness: 0.8,              
+            normalScale: new THREE.Vector2(1.2, 1.2), 
+            color: 0xd5c9b9,              
+            roughness: 0.85,              
             metalness: 0.05               
         });
         
         const earth = new THREE.Mesh(geometry, material);
-        // 重設為標準 0 點，不進行混淆的矩陣變換
-        earth.rotation.set(0, 0, 0);
+        earth.rotation.y = Math.PI; 
         scene.add(earth);
 
-        camera.position.set(0, 1.0, 6);
+        camera.position.set(0, 1.2, 6);
 
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
@@ -160,11 +129,10 @@
         controls.minDistance = 3.5;
         controls.maxDistance = 8;
 
-        // 🔥 修正 3：分析特定地球儀後，重新推導的絕對咬合幾何坐標轉換公式
+        // 5. 球面經緯度轉 3D 坐標公式
         function latLngToVector3(lat, lng, radius) {
             const phi = (90 - lat) * (Math.PI / 180);
-            // 引入 MAP_ALIGN_OFFSET，將經度與地圖圖像像素精確對齊，香港與奧地利絕不再漂移！
-            const theta = (lng + 180 + MAP_ALIGN_OFFSET) * (Math.PI / 180); 
+            const theta = (lng) * (Math.PI / 180); 
             
             return new THREE.Vector3(
                 -radius * Math.sin(phi) * Math.sin(theta),
@@ -173,8 +141,17 @@
             );
         }
 
-        // 生成大洲標籤
-        CONTINENT_LABELS.forEach(label => {
+        // --- 6. 大洲位置標籤 ---
+        const continentLabels = [
+            { name: "ASIA", lat: 35.0, lng: 95.0 },
+            { name: "EUROPE", lat: 50.0, lng: 15.0 }, 
+            { name: "AFRICA", lat: 5.0, lng: 20.0 },  
+            { name: "AUSTRALIA", lat: -25.0, lng: 135.0 }, 
+            { name: "INDIAN OCEAN", lat: -15.0, lng: 80.0 }, 
+            { name: "PACIFIC OCEAN", lat: 20.0, lng: 150.0 } 
+        ];
+
+        continentLabels.forEach(label => {
             const el = document.createElement('div');
             el.className = 'globe-label';
             el.innerText = label.name;
@@ -187,56 +164,78 @@
             label.anchor = anchor;
         });
 
-        // 生成 3D 實體標記點與隱形點擊盒
+        // --- 7. 香港 Pin 點與奧地利 Pin 點 ---
         const markers = [];
-
-        // 立體復古五角星生成函數
-        function createExtrudedStar(size) {
-            const shape = new THREE.Shape();
-            const numPoints = 5;
-            const innerRadius = size * 0.4;
-            const outerRadius = size;
-            for (let i = 0; i < numPoints * 2; i++) {
-                const r = (i % 2 === 0) ? outerRadius : innerRadius;
-                const angle = (Math.PI * i) / numPoints;
-                shape.lineTo(Math.sin(angle) * r, Math.cos(angle) * r);
+        const pinData = [
+            {
+                name: "HONG KONG",
+                lat: 22.3193, lng: 114.1694,
+                isHome: true, 
+                color: 0xd4af37, 
+                desc: "[ HOME BASE ]<br>記憶與起點。",
+                link: "journey/hongkong.html"
+            },
+            {
+                name: "AUSTRIA",
+                lat: 47.5162, lng: 14.5501,
+                isHome: false, 
+                color: 0xb5a38f, 
+                desc: "[ TRACK__01 ]<br>音樂、雪山與金色黃昏的追尋。",
+                link: "journey/austria.html"
             }
-            shape.closePath();
-            const settings = { depth: 0.015, bevelEnabled: false };
-            return new THREE.ExtrudeGeometry(shape, settings);
-        }
+        ];
 
-        MY_TRAVEL_PINS.forEach(data => {
+        pinData.forEach(data => {
             const pinGroup = new THREE.Group();
             
             if (data.isHome) {
-                // 香港：精準雕刻的縮小版立體復古金屬五角星 (修正 1)
-                const starGeom = createExtrudedStar(0.045);
-                const starMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.85, roughness: 0.2 });
+                const starShape = new THREE.Shape();
+                const numPoints = 5;
+                const innerRadius = 0.022; 
+                const outerRadius = 0.055;
+                const cx = 0, cy = 0;
+                
+                for (let i = 0; i < numPoints * 2; i++) {
+                    const radius = (i % 2 === 0) ? outerRadius : innerRadius;
+                    const angle = (Math.PI * i) / numPoints;
+                    const x = cx + radius * Math.sin(angle);
+                    const y = cy + radius * Math.cos(angle);
+                    if (i === 0) { starShape.moveTo(x, y); } else { starShape.lineTo(x, y); }
+                }
+                starShape.closePath();
+
+                const extrudeSettings = { depth: 0.015, bevelEnabled: false, curveSegments: 12 };
+                const starGeom = new THREE.ExtrudeGeometry(starShape, extrudeSettings);
+                const starMat = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.9, roughness: 0.1 });
                 const starMesh = new THREE.Mesh(starGeom, starMat);
-                starMesh.rotateX(-Math.PI / 2); // 讓五角星平貼在球面上發射
                 pinGroup.add(starMesh);
+
+                const clickSphereGeom = new THREE.SphereGeometry(0.08, 16, 16);
+                const clickMat = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.0, depthWrite: false }); 
+                const clickSphere = new THREE.Mesh(clickSphereGeom, clickMat);
+                clickSphere.userData = data; 
+                clickSphere.name = "ClickArea_HK";
+                pinGroup.add(clickSphere);
+                markers.push(clickSphere); 
+
             } else {
-                // 奧地利等足跡點：古典雕刻圖釘
-                const ballGeom = new THREE.SphereGeometry(0.03, 16, 16);
-                const pinGeom = new THREE.CylinderGeometry(0.005, 0.005, 0.07, 8);
-                const mat = new THREE.MeshStandardMaterial({ color: 0xb5a38f, metalness: 0.8, roughness: 0.2 });
-                const ball = new THREE.Mesh(ballGeom, mat); ball.position.y = 0.05;
-                const pin = new THREE.Mesh(pinGeom, mat); pin.position.y = 0.015;
+                const ballGeom = new THREE.SphereGeometry(0.035, 16, 16);
+                const pinGeom = new THREE.CylinderGeometry(0.006, 0.006, 0.1, 8);
+                const mat = new THREE.MeshStandardMaterial({ color: 0xe5d8c4, metalness: 0.85, roughness: 0.2 });
+                
+                const ball = new THREE.Mesh(ballGeom, mat);
+                ball.position.y = 0.07;
+                const pin = new THREE.Mesh(pinGeom, mat);
+                pin.position.y = 0.02;
+                
                 pinGroup.add(ball, pin);
+                pinGroup.children.forEach(child => child.userData = data); 
+                markers.push(ball, pin); 
             }
 
-            // 🔥 修正 3 (續)：為每個 Pin 點自動生成一個「較大的隱形點擊感應球」，徹底解決縮小後點不到的分頁 Bug！
-            const clickSphereGeom = new THREE.SphereGeometry(0.09, 16, 16); // 感應範圍足夠大
-            const clickSphereMat = new THREE.MeshStandardMaterial({ transparent: true, opacity: 0.0, depthWrite: false }); // 完全透明
-            const clickSphere = new THREE.Mesh(clickSphereGeom, clickSphereMat);
-            clickSphere.userData = data; // 將點擊數據和跳轉網址綁定在隱形球上
-            pinGroup.add(clickSphere);
-            markers.push(clickSphere); // 讓 Raycaster 只去掃描這個大感應球
-
-            // 位置與朝向校正
             const pos = latLngToVector3(data.lat, data.lng, 2.0); 
             pinGroup.position.copy(pos);
+            
             const targetPos = latLngToVector3(data.lat, data.lng, 3.0);
             pinGroup.lookAt(targetPos);
             if(!data.isHome) pinGroup.rotateX(Math.PI / 2); 
@@ -244,36 +243,38 @@
             earth.add(pinGroup);
         });
 
-        // 滑鼠點擊互動偵測
+        // 7. 滑鼠點擊偵測機制
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         const popup = document.getElementById('popup');
 
         window.addEventListener('click', (e) => {
-            if (e.target.closest('#popup')) return;
+            if (e.target.closest('#popup')) return; 
 
             mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
             raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(markers); // 掃描透明感應球
+            const intersects = raycaster.intersectObjects(markers); 
 
             if (intersects.length > 0) {
-                const hitPin = intersects[0].object.userData; // 順利拿到數據！
+                const hitPin = intersects[0].object.userData;
+                
                 popup.style.display = 'block';
                 popup.style.left = Math.min(e.clientX + 15, window.innerWidth - 220) + 'px';
                 popup.style.top = Math.min(e.clientY - 30, window.innerHeight - 150) + 'px';
                 document.getElementById('popup_title').innerText = hitPin.name;
                 document.getElementById('popup_desc').innerHTML = hitPin.desc;
                 document.getElementById('popup_link').href = hitPin.link;
-                autoRotate = false;
+                
+                autoRotate = false; 
             } else {
                 popup.style.display = 'none';
-                autoRotate = true;
+                autoRotate = true; 
             }
         });
 
-        // 動態渲染循環
+        // 8. 動態渲染與大洲投影
         let autoRotate = true;
         const tempV = new THREE.Vector3();
 
@@ -281,12 +282,12 @@
             requestAnimationFrame(animate);
             
             if (autoRotate) {
-                earth.rotation.y += 0.0012; // 慢速優雅自轉
+                earth.rotation.y += 0.0012; 
             }
             
-            // 更新大洲名字標籤位置與背面裁切
-            CONTINENT_LABELS.forEach(label => {
-                label.anchor.getWorldPosition(tempV);
+            continentLabels.forEach(label => {
+                label.anchor.getWorldPosition(tempV); 
+                
                 const distToCamera = tempV.distanceTo(camera.position);
                 const earthCenterToCamera = earth.position.distanceTo(camera.position);
                 
