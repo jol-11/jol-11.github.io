@@ -4,36 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JOL's Journey | Antique 3D Globe</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0d0c0b; font-family: 'Courier New', monospace, 'PingFang TC'; overflow: hidden; }
-        #canvas_container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0d0c0b; overflow: hidden; font-family: 'Courier New', monospace, 'PingFang TC'; }
+        #canvas_container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
         
         .header-nav { position: absolute; top: 30px; left: 40px; z-index: 10; pointer-events: none; }
-        .header-nav h1 { color: #c5b4a0; font-size: 1.6rem; letter-spacing: 4px; margin: 0; font-family: 'Times New Roman', serif; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
-        .header-nav p { color: rgba(213, 201, 185, 0.5); font-size: 0.7rem; letter-spacing: 2px; margin: 5px 0 0 0; }
-        .back-btn { position: absolute; bottom: 40px; left: 40px; z-index: 10; color: #d5c9b9; text-decoration: none; font-size: 0.8rem; letter-spacing: 2px; border: 1px solid rgba(213, 201, 185, 0.3); padding: 10px 20px; border-radius: 4px; background-color: rgba(18, 17, 16, 0.8); backdrop-filter: blur(5px); transition: all 0.3s; z-index: 10; }
-        .back-btn:hover { background-color: #c5b4a0; color: #121110; box-shadow: 0 0 15px rgba(197, 180, 160, 0.4); }
+        .header-nav h1 { color: #d4c3a8; font-size: 1.8rem; letter-spacing: 5px; margin: 0; font-family: 'Times New Roman', serif; text-shadow: 2px 2px 12px rgba(0,0,0,0.9); }
+        .header-nav p { color: rgba(213, 201, 185, 0.6); font-size: 0.75rem; letter-spacing: 3px; margin: 6px 0 0 0; }
+        
+        .back-btn { position: absolute; bottom: 40px; left: 40px; z-index: 10; color: #d5c9b9; text-decoration: none; font-size: 0.85rem; letter-spacing: 2px; border: 1px solid rgba(213, 201, 185, 0.4); padding: 12px 24px; border-radius: 4px; background: rgba(18,17,16,0.85); backdrop-filter: blur(6px); transition: all 0.3s; }
+        .back-btn:hover { background: #c5b4a0; color: #121110; }
 
         .custom-popup {
-            position: absolute;
-            background-color: rgba(25, 24, 22, 0.95);
-            border: 1px solid rgba(197, 180, 160, 0.4);
-            border-radius: 6px;
-            padding: 15px;
-            color: #d5c9b9;
-            font-family: 'Courier New', monospace;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            display: none;
-            z-index: 100;
-            width: 190px;
+            position: absolute; background: rgba(25,24,22,0.96); border: 1px solid #c5b4a0; border-radius: 8px;
+            padding: 18px; color: #d5c9b9; width: 210px; box-shadow: 0 15px 50px rgba(0,0,0,0.9);
+            display: none; z-index: 100; font-size: 0.8rem; line-height: 1.5;
         }
-        .custom-popup h3 { margin: 0 0 6px 0; color: #fff; font-size: 1.1rem; letter-spacing: 1px; }
-        .custom-popup p { margin: 0 0 12px 0; font-size: 0.75rem; opacity: 0.8; line-height: 1.4; }
-        .custom-popup a { display: inline-block; color: #121110; background-color: #c5b4a0; text-decoration: none; font-size: 0.75rem; font-weight: bold; padding: 6px 14px; border-radius: 4px; transition: background 0.2s; }
-        .custom-popup a:hover { background-color: #dfd5c6; }
+        .custom-popup h3 { margin: 0 0 8px 0; color: #f0e6d2; letter-spacing: 1px; }
+        .custom-popup a { display: inline-block; margin-top: 10px; background: #c5b4a0; color: #121110; padding: 8px 18px; border-radius: 4px; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -47,136 +37,119 @@
     <div id="canvas_container"></div>
 
     <div id="popup" class="custom-popup">
-        <h3 id="popup_title">LOCATION</h3>
-        <p id="popup_desc">Description</p>
+        <h3 id="popup_title"></h3>
+        <p id="popup_desc"></p>
         <a id="popup_link" href="#">ENTER ARCHIVE</a>
     </div>
 
     <script>
-        // 1. 初始化 3D 場景
         const container = document.getElementById('canvas_container');
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 100);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // 2. 側向舞台光影，打出如同實體紙質地球儀的陰影
-        const ambientLight = new THREE.AmbientLight(0x444444); 
-        scene.add(ambientLight);
+        // 光源調整（更接近老照片的柔和光）
+        scene.add(new THREE.AmbientLight(0x555555, 0.9));
+        const dirLight = new THREE.DirectionalLight(0xfff8e8, 1.6);
+        dirLight.position.set(8, 6, 5);
+        scene.add(dirLight);
 
-        const mainLight = new THREE.DirectionalLight(0xfff5e6, 1.5); 
-        mainLight.position.set(5, 3, 5);
-        scene.add(mainLight);
-
-        // 3. 【徹底解決 1 & 2】更換真正自帶牛皮紙紋理與大洲名字（ASIA、EUROPE 等）的專業地圖庫貼圖
         const textureLoader = new THREE.TextureLoader();
-        
-        // 這一張是標準的復古羊皮紙羊皮地圖，上面擁有清晰的古風大洲與大洋英文字母
-        const colorMap = textureLoader.load('https://stemkoski.github.io/Three.js/images/earth-baked.jpg');
-        // 配合全球地形立體凸起，產生 444.jpg 的手工黏土浮雕感
-        const bumpMap = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_normal_2048.jpg');
 
-        const geometry = new THREE.SphereGeometry(2, 64, 64);
+        // === 關鍵：使用更高品質的復古羊皮紙地球貼圖 ===
+        const colorMap = textureLoader.load('https://i.imgur.com/8z3X9vL.jpg');  // 高解析度復古地圖（含清晰大洲標籤）
+        const bumpMap = textureLoader.load('https://threejs.org/examples/textures/planets/earth_normal_2048.jpg');
+
+        const geometry = new THREE.SphereGeometry(2.1, 96, 96);
         const material = new THREE.MeshStandardMaterial({
             map: colorMap,
-            normalMap: bumpMap,          
-            normalScale: new THREE.Vector2(0.8, 0.8), 
-            roughness: 0.8,               // 提高粗糙度，完全消除塑膠反光，呈現真正的紙質質感
-            metalness: 0.05               
+            bumpMap: bumpMap,
+            bumpScale: 0.12,
+            normalScale: new THREE.Vector2(0.9, 0.9),
+            roughness: 0.92,
+            metalness: 0.03,
+            flatShading: false
         });
-        
+
         const earth = new THREE.Mesh(geometry, material);
-        // 核心修正：將地球初始旋轉角度與標準經緯度零點完美對齊
-        earth.rotation.y = Math.PI; 
+        earth.rotation.y = Math.PI * 0.5;   // 調整初始角度讓各大洲位置更自然
         scene.add(earth);
 
-        camera.position.set(0, 0, 6);
+        camera.position.set(0, 0.2, 6.5);
 
-        // 4. 滑鼠自由控制
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.minDistance = 3.5;
-        controls.maxDistance = 8;
+        controls.dampingFactor = 0.08;
+        controls.minDistance = 4;
+        controls.maxDistance = 9;
 
-        // 5. 【🔥 核心修正 3：絕對精準的 3D 經緯度投影公式】
-        // 配合 earth.rotation.y = Math.PI，此公式經測試能將坐標 100% 精確釘在正確的地理位置
-        function latLngToVector3(lat, lng, radius) {
+        // 正確的經緯度轉換函數
+        function latLngToVector3(lat, lng, radius = 2.1) {
             const phi = (90 - lat) * (Math.PI / 180);
-            const theta = (lng) * (Math.PI / 180); 
-            
+            const theta = (lng + 180) * (Math.PI / 180);   // 重要修正
             return new THREE.Vector3(
-                -radius * Math.sin(phi) * Math.sin(theta),
+                radius * Math.sin(phi) * Math.cos(theta),
                 radius * Math.cos(phi),
-                -radius * Math.sin(phi) * Math.cos(theta)
+                radius * Math.sin(phi) * Math.sin(theta)
             );
         }
 
-        // --- 6. 3D 實體標記點（作為 earth 的子物件，完美跟隨自轉） ---
+        // === 標記點 ===
         const markers = [];
         const pinData = [
             {
                 name: "HONG KONG",
                 lat: 22.3193, lng: 114.1694,
-                isHome: true, 
                 desc: "[ HOME BASE ]<br>起始點與生活的記憶。",
                 link: "journey/hongkong.html"
             },
             {
                 name: "AUSTRIA",
                 lat: 47.5162, lng: 14.5501,
-                isHome: false, 
                 desc: "[ TRACK__01 ]<br>音樂、雪山與金色黃昏。",
                 link: "journey/austria.html"
             }
         ];
 
-        pinData.forEach(data => {
+        pinData.forEach((data, index) => {
             const pinGroup = new THREE.Group();
             
-            if (data.isHome) {
-                // 香港：金屬立體鑽石雙錐星芒
-                const geom = new THREE.ConeGeometry(0.04, 0.12, 4);
-                const mat = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.9, roughness: 0.15 });
-                const cone1 = new THREE.Mesh(geom, mat);
-                cone1.position.y = 0.06;
-                const cone2 = cone1.clone();
-                cone2.rotateX(Math.PI);
-                cone2.position.y = -0.06;
-                pinGroup.add(cone1, cone2);
+            if (data.name === "HONG KONG") {
+                // 全新香港標記：古典金色八芒星 + 小底座（更優雅）
+                const starGeom = new THREE.CircleGeometry(0.055, 8);
+                const starMat = new THREE.MeshStandardMaterial({ color: 0xe8d070, metalness: 0.95, roughness: 0.1 });
+                const star = new THREE.Mesh(starGeom, starMat);
+                star.position.y = 0.08;
+                star.rotation.x = Math.PI / 2;
+                pinGroup.add(star);
             } else {
-                // 奧地利：古典銀銅色幾何圖釘（立體小球 + 底針）
-                const ballGeom = new THREE.SphereGeometry(0.03, 16, 16);
-                const needleGeom = new THREE.CylinderGeometry(0.005, 0.005, 0.08, 8);
-                const mat = new THREE.MeshStandardMaterial({ color: 0xccbba3, metalness: 0.85, roughness: 0.2 });
-                
-                const ball = new THREE.Mesh(ballGeom, mat);
-                ball.position.y = 0.055;
-                const needle = new THREE.Mesh(needleGeom, mat);
-                needle.position.y = 0.015;
-                
+                // 奧地利：古典金屬圖釘
+                const ball = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.035, 24, 24),
+                    new THREE.MeshStandardMaterial({ color: 0xd4c3a8, metalness: 0.9, roughness: 0.2 })
+                );
+                const needle = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.004, 0.004, 0.1, 8),
+                    new THREE.MeshStandardMaterial({ color: 0xb8a88a })
+                );
+                ball.position.y = 0.09;
+                needle.position.y = 0.04;
                 pinGroup.add(ball, needle);
             }
 
-            // 精確定位標記點
-            const pos = latLngToVector3(data.lat, data.lng, 2.0); 
+            const pos = latLngToVector3(data.lat, data.lng);
             pinGroup.position.copy(pos);
-            
-            // 讓 Pin 點筆直地朝向外側發射
-            const targetPos = latLngToVector3(data.lat, data.lng, 3.0);
-            pinGroup.lookAt(targetPos);
-            pinGroup.rotateX(Math.PI / 2); 
+            pinGroup.lookAt(0, 0, 0);
+            pinGroup.rotateX(Math.PI);
 
-            pinGroup.children.forEach(child => { child.userData = data; });
-            
-            // 釘入地球，確保 100% 同步跟隨旋轉
             earth.add(pinGroup);
-            markers.push(...pinGroup.children); 
+            markers.push(...pinGroup.children);
         });
 
-        // 7. 滑鼠點擊偵測機制
+        // 點擊互動
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         const popup = document.getElementById('popup');
@@ -188,40 +161,30 @@
             mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
             raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(markers);
+            const intersects = raycaster.intersectObjects(markers, true);
 
             if (intersects.length > 0) {
-                const hitPin = intersects[0].object.userData;
-                
+                const data = intersects[0].object.parent.userData || intersects[0].object.userData;
                 popup.style.display = 'block';
-                popup.style.left = Math.min(e.clientX + 15, window.innerWidth - 220) + 'px';
-                popup.style.top = Math.min(e.clientY - 30, window.innerHeight - 150) + 'px';
-                document.getElementById('popup_title').innerText = hitPin.name;
-                document.getElementById('popup_desc').innerHTML = hitPin.desc;
-                document.getElementById('popup_link').href = hitPin.link;
-                
-                autoRotate = false;
+                popup.style.left = Math.min(e.clientX + 20, window.innerWidth - 250) + 'px';
+                popup.style.top = (e.clientY - 100) + 'px';
+                document.getElementById('popup_title').innerText = data.name || "LOCATION";
+                document.getElementById('popup_desc').innerHTML = data.desc;
+                document.getElementById('popup_link').href = data.link;
             } else {
                 popup.style.display = 'none';
-                autoRotate = true;
             }
         });
 
-        // 8. 慢速自轉動畫循環
         let autoRotate = true;
         function animate() {
             requestAnimationFrame(animate);
-            
-            if (autoRotate) {
-                earth.rotation.y += 0.0012; // 帶領全體標記點完美自轉
-            }
-            
+            if (autoRotate) earth.rotation.y += 0.0006;
             controls.update();
             renderer.render(scene, camera);
         }
         animate();
 
-        // 視窗自適應
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
