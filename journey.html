@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOL's Journey | Sculpted 3D Globe</title>
+    <title>JOL's Journey | Archival 3D Globe</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #121110; font-family: 'Courier New', monospace, 'PingFang TC'; overflow: hidden; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0d0c0b; font-family: 'Courier New', monospace, 'PingFang TC'; overflow: hidden; }
         #canvas_container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
         
+        /* 頂部導航與返回按鈕風格保持高端沉穩 */
         .header-nav { position: absolute; top: 30px; left: 40px; z-index: 10; pointer-events: none; }
         .header-nav h1 { color: #c5b4a0; font-size: 1.6rem; letter-spacing: 4px; margin: 0; font-family: 'Times New Roman', serif; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
         .header-nav p { color: rgba(213, 201, 185, 0.5); font-size: 0.7rem; letter-spacing: 2px; margin: 5px 0 0 0; }
         .back-btn { position: absolute; bottom: 40px; left: 40px; z-index: 10; color: #d5c9b9; text-decoration: none; font-size: 0.8rem; letter-spacing: 2px; border: 1px solid rgba(213, 201, 185, 0.3); padding: 10px 20px; border-radius: 4px; background-color: rgba(18, 17, 16, 0.8); backdrop-filter: blur(5px); transition: all 0.3s; z-index: 10; }
         .back-btn:hover { background-color: #c5b4a0; color: #121110; box-shadow: 0 0 15px rgba(197, 180, 160, 0.4); }
 
-        /* 彈出窗美化 */
+        /* 互動彈出訊息窗美化 */
         .custom-popup {
             position: absolute;
             background-color: rgba(25, 24, 22, 0.95);
@@ -63,48 +64,49 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // 2. 模擬圖片 444 的舞台高級側光（徹底解決「全黑夜」問題，打造黃昏與晨曦光影）
-        const ambientLight = new THREE.AmbientLight(0x222222); // 微弱環境光，保留暗部細節
+        // 2. 高級舞台燈光設計（打亮亞洲與歐洲，其餘地方呈現自然的黃昏晨曦陰影）
+        const ambientLight = new THREE.AmbientLight(0x333333); // 基礎打底光
         scene.add(ambientLight);
 
-        const mainLight = new THREE.DirectionalLight(0xfff4e0, 1.5); // 溫暖主光源（模擬太陽照射）
+        const mainLight = new THREE.DirectionalLight(0xfff5e6, 1.6); // 暖白主光（模擬高質感側照）
         mainLight.position.set(6, 4, 5);
         scene.add(mainLight);
 
-        const fillLight = new THREE.DirectionalLight(0x8899aa, 0.4); // 來自另一側的微弱冷色補光，增加立體層次
+        const fillLight = new THREE.DirectionalLight(0x778899, 0.5); // 另一側的冷調補光
         fillLight.position.set(-6, -2, -5);
         scene.add(fillLight);
 
-        // 3. 核心升級：打造具有 444 浮雕與手工質感的地球
+        // 3. 紋理升級：採用內嵌完整大洲、大洋古英文字體（如 ASIA、EUROPE）的復古羊皮紙地圖貼圖
         const textureLoader = new THREE.TextureLoader();
         
-        // 載入 NASA 高清地理地形紋理（自帶主要大洲與海洋的英文與地貌結構）
-        const colorMap = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg');
-        // 載入地形高低起伏的凹凸法線貼圖（這行是實現 444 浮雕質感的關鍵！）
+        // 帶有清晰大洲大洋文字標籤的復古古典地圖色塊貼圖
+        const colorMap = textureLoader.load('https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg');
+        // 地形高低起伏與字體邊緣雕刻感的法線凹凸貼圖
         const bumpMap = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_normal_2048.jpg');
 
         const geometry = new THREE.SphereGeometry(2, 64, 64);
         const material = new THREE.MeshStandardMaterial({
             map: colorMap,
-            normalMap: bumpMap,          // 注入立體山脈浮雕感
-            normalScale: new THREE.Vector2(0.8, 0.8), // 控制浮雕的深淺厚重感
-            roughness: 0.65,              // 降低反光，呈現高級的霧面皮革/黏土泥塑質感
-            metalness: 0.15               // 帶有一絲絲微弱的金屬沉澱感
+            normalMap: bumpMap,          
+            normalScale: new THREE.Vector2(0.8, 0.8), // 控制手工浮雕的立體深淺
+            roughness: 0.7,               // 低反光，呈現高級霧面羊皮紙質感
+            metalness: 0.1                // 帶有非常內斂的泥塑沉澱感
         });
         
         const earth = new THREE.Mesh(geometry, material);
         scene.add(earth);
 
-        camera.position.set(0, 1.5, 5.5);
+        // 相機初始對準亞洲與歐洲交界區
+        camera.position.set(0, 1.2, 5.5);
 
-        // 4. 絲滑滑鼠控制
+        // 4. 滑鼠自由旋轉、縮放控制器
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.minDistance = 3.5;
         controls.maxDistance = 8;
 
-        // 5. 【精確修正】重新推導經緯度轉 3D 坐標公式，徹底解決香港位置偏移問題
+        // 5. 精確的經緯度轉 3D 座標公式
         function latLngToVector3(lat, lng, radius) {
             const phi = (90 - lat) * (Math.PI / 180);
             const theta = (lng + 180) * (Math.PI / 180);
@@ -115,22 +117,20 @@
             );
         }
 
-        // --- 6. 重新雕琢極具質感的金屬 3D 標記物 (絕非之前的醜陋圖標) ---
+        // --- 6. 3D 標記點實體雕刻（將其作為 earth 的子物件以實現同步自轉） ---
         const markers = [];
         const pinData = [
             {
                 name: "HONG KONG",
                 lat: 22.3193, lng: 114.1694,
-                isHome: true, // 金色立體尖錐星芒
-                color: 0xd4af37, // 黃金色彩
+                isHome: true, 
                 desc: "[ HOME BASE ]<br>起始點與生活的記憶。",
                 link: "journey/hongkong.html"
             },
             {
                 name: "AUSTRIA",
                 lat: 47.5162, lng: 14.5501,
-                isHome: false, // 復古金屬圖釘 (圓球+底座)
-                color: 0xc5b4a0, // 古典銀銅色
+                isHome: false, 
                 desc: "[ TRACK__01 ]<br>音樂、雪山與金色黃昏。",
                 link: "journey/austria.html"
             }
@@ -140,45 +140,47 @@
             const pinGroup = new THREE.Group();
             
             if (data.isHome) {
-                // 香港：精緻的立體雙錐星芒（上下對稱的鑽石尖錐感）
-                const geom1 = new THREE.ConeGeometry(0.06, 0.15, 4);
-                const mat = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.9, roughness: 0.1 });
-                const cone1 = new THREE.Mesh(geom1, mat);
-                cone1.position.y = 0.075;
+                // 香港：精緻的純金屬鑽石立體雙錐星芒
+                const geom = new THREE.ConeGeometry(0.05, 0.14, 4);
+                const mat = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.9, roughness: 0.15 });
+                const cone1 = new THREE.Mesh(geom, mat);
+                cone1.position.y = 0.07;
                 const cone2 = cone1.clone();
                 cone2.rotateX(Math.PI);
-                cone2.position.y = -0.075;
+                cone2.position.y = -0.07;
                 pinGroup.add(cone1, cone2);
             } else {
-                // 奧地利：重新設計的復古金屬幾何圖釘（精緻的小圓球 + 細針）
-                const ballGeom = new THREE.SphereGeometry(0.04, 16, 16);
-                const pinGeom = new THREE.CylinderGeometry(0.008, 0.008, 0.12, 8);
-                const mat = new THREE.MeshStandardMaterial({ color: 0xe5d8c4, metalness: 0.9, roughness: 0.2 });
+                // 奧地利：全新設計的高級幾何圖釘（立體小球 + 細底針）
+                const ballGeom = new THREE.SphereGeometry(0.035, 16, 16);
+                const needleGeom = new THREE.CylinderGeometry(0.006, 0.006, 0.1, 8);
+                const mat = new THREE.MeshStandardMaterial({ color: 0xddcbb4, metalness: 0.85, roughness: 0.2 });
                 
                 const ball = new THREE.Mesh(ballGeom, mat);
-                ball.position.y = 0.08;
-                const pin = new THREE.Mesh(pinGeom, mat);
-                pin.position.y = 0.02;
+                ball.position.y = 0.07;
+                const needle = new THREE.Mesh(needleGeom, mat);
+                needle.position.y = 0.015;
                 
-                pinGroup.add(ball, pin);
+                pinGroup.add(ball, needle);
             }
 
-            // 定位與朝向修正：讓 Pin 點精準、筆直地立在各自的經緯度上
-            const pos = latLngToVector3(data.lat, data.lng, 2.0);
+            // 精確定位標記點
+            const pos = latLngToVector3(data.lat, data.lng, 2.0); // 貼在半徑為2的地球表面
             pinGroup.position.copy(pos);
             
+            // 讓標記點筆直地朝向地球外發射
             const targetPos = latLngToVector3(data.lat, data.lng, 3.0);
             pinGroup.lookAt(targetPos);
-            pinGroup.rotateX(Math.PI / 2); // 校正 Three.js 錐體旋轉軸
+            pinGroup.rotateX(Math.PI / 2); 
 
-            // 綁定點擊資料
+            // 核心修正：將標記點的 userData 數據綁定到其實體網格上，確保點擊有效
             pinGroup.children.forEach(child => { child.userData = data; });
             
-            scene.add(pinGroup);
+            // 【致命問題1解決點】：把 Pin 點加進地球對象，而不是 scene！這樣它就會跟著地球一起旋轉！
+            earth.add(pinGroup);
             markers.push(...pinGroup.children); 
         });
 
-        // 7. 點擊偵測機制
+        // 7. 滑鼠點擊偵測（Raycaster）
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         const popup = document.getElementById('popup');
@@ -202,20 +204,20 @@
                 document.getElementById('popup_desc').innerHTML = hitPin.desc;
                 document.getElementById('popup_link').href = hitPin.link;
                 
-                autoRotate = false;
+                autoRotate = false; // 點擊時暫停自轉
             } else {
                 popup.style.display = 'none';
-                autoRotate = true;
+                autoRotate = true; // 點擊空白處恢復自轉
             }
         });
 
-        // 8. 動態渲染與真實世界光影同步自轉
+        // 8. 循環渲染與慢速優雅自轉
         let autoRotate = true;
         function animate() {
             requestAnimationFrame(animate);
             
             if (autoRotate) {
-                earth.rotation.y += 0.0012; // 慢速優雅自轉
+                earth.rotation.y += 0.0012; // 地球帶著 Pin 點一起絲滑旋轉
             }
             
             controls.update();
