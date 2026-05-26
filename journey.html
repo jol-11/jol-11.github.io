@@ -1,1 +1,178 @@
-<h1>這是 MY JOURNEY 頁面</h1><a href="index.html">返回主頁</a>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOL's Journey | 3D Archive</title>
+    <script src="https://www.webglearth.com/v2/api.js"></script>
+    <style>
+        /* 全局深色神祕感調性，延續主頁風格 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0d0c0b;
+            font-family: 'Courier New', Courier, monospace, 'PingFang TC';
+            overflow: hidden;
+        }
+
+        /* 3D 地球容器（滿版） */
+        #earth_div {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* 頂部導航與標題 */
+        .header-nav {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .header-nav h1 {
+            color: #c5b4a0;
+            font-size: 1.6rem;
+            letter-spacing: 4px;
+            margin: 0;
+            font-family: 'Times New Roman', serif;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+        }
+        .header-nav p {
+            color: rgba(213, 201, 185, 0.5);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            margin: 5px 0 0 0;
+        }
+
+        /* 返回主頁按鈕 */
+        .back-btn {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            z-index: 10;
+            color: #d5c9b9;
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            border: 1px solid rgba(213, 201, 185, 0.3);
+            padding: 10px 20px;
+            border-radius: 4px;
+            background-color: rgba(18, 17, 16, 0.8);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            background-color: #c5b4a0;
+            color: #121110;
+            box-shadow: 0 0 15px rgba(197, 180, 160, 0.4);
+        }
+
+        /* 自訂 Pin 點的彈出視窗（Popup）美化 */
+        .we-pp-content {
+            font-family: 'Courier New', monospace, 'PingFang TC' !important;
+            background-color: #1e1d1b !important;
+            color: #d5c9b9 !important;
+            padding: 12px !important;
+            border-radius: 6px !important;
+            border: 1px solid rgba(213, 201, 185, 0.2) !important;
+            text-align: center;
+        }
+        .we-pp-content h3 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+        .we-pp-content p {
+            margin: 0 0 10px 0;
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        .we-pp-content a {
+            display: inline-block;
+            color: #121110;
+            background-color: #c5b4a0;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+        .we-pp-content a:hover {
+            background-color: #dfd5c6;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-nav">
+        <h1>MY JOURNEY</h1>
+        <p>THE FOOTPRINTS OF TIME // 3D GLOBE ARCHIVE</p>
+    </div>
+
+    <a href="index.html" class="back-btn">← RETURN TO CABINET</a>
+
+    <div id="earth_div"></div>
+
+    <script>
+        function initialize() {
+            // 1. 初始化 3D 地球儀
+            var earth = new WE.map('earth_div', {
+                center: [30.0, 100.0], // 初始中心點坐標
+                zoom: 2.5,             // 初始縮放高度
+                dragging: true,        // 允許拖拽旋轉
+                scrollWheelZoom: true  // 允許滑鼠滾輪縮放
+            });
+
+            // 2. 套用高質感的衛星混合圖層 (帶有夜間大地質感)
+            WE.tileLayer('https://webglearth.github.io/webglearth2-offline/{z}/{x}/{y}.jpg', {
+                tileSize: 256,
+                bounds: [[-85, -180], [85, 180]],
+                minZoom: 1,
+                maxZoom: 16,
+                attribution: 'JOL Archive',
+                tms: true
+            }).addTo(earth);
+
+            // --- 3. 自由設立你的 Pin 點 ---
+
+            // 【📌 地點一：Hong Kong (Home Star)】
+            // 坐標：緯度 22.3193, 經度 114.1694
+            var markerHK = WE.marker([22.3193, 114.1694], 'https://img.icons8.com/fluency/48/star--v1.png', 32, 32).addTo(earth);
+            markerHK.bindPopup(
+                "<h3>HONG KONG</h3><p>[ HOME BASE ]<br>記憶與起點。</p><a href='journey/hongkong.html'>ENTER ARCHIVE</a>", 
+                150
+            );
+
+            // 【📌 地點二：Austria (奧地利)】
+            // 坐標：緯度 47.5162, 經度 14.5501
+            var markerAustria = WE.marker([47.5162, 14.5501], 'https://img.icons8.com/fluency/48/marker.png', 32, 32).addTo(earth);
+            markerAustria.bindPopup(
+                "<h3>AUSTRIA</h3><p>[ TRACK__01 ]<br>音樂、雪山與金色黃昏的記錄。</p><a href='journey/austria.html'>ENTER ARCHIVE</a>", 
+                180
+            );
+            
+            // 讓地球緩慢自動旋轉開場（極具電影質感）
+            var before = null;
+            requestAnimationFrame(function animate(now) {
+                var c = earth.getPosition();
+                var elapsed = before? now - before: 0;
+                before = now;
+                // 當滑鼠沒有在拖拽時，才自動旋轉
+                earth.setView([c[0], c[1] + elapsed * 0.008]);
+                requestAnimationFrame(animate);
+            });
+        }
+
+        // 啟動地球
+        window.onload = initialize;
+    </script>
+</body>
+</html>
