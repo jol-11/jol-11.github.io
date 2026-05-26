@@ -3,104 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOL's Journey | High-End 3D Archive</title>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+    <title>JOL's Journey | Art 3D Globe</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0d0c0b; font-family: 'Courier New', monospace, 'PingFang TC'; overflow: hidden; }
-        #earth_div { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+        #canvas_container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+        
+        /* 介面風格保持一致 */
         .header-nav { position: absolute; top: 30px; left: 40px; z-index: 10; pointer-events: none; }
         .header-nav h1 { color: #c5b4a0; font-size: 1.6rem; letter-spacing: 4px; margin: 0; font-family: 'Times New Roman', serif; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
         .header-nav p { color: rgba(213, 201, 185, 0.5); font-size: 0.7rem; letter-spacing: 2px; margin: 5px 0 0 0; }
-        .back-btn { position: absolute; bottom: 40px; left: 40px; z-index: 10; color: #d5c9b9; text-decoration: none; font-size: 0.8rem; letter-spacing: 2px; border: 1px solid rgba(213, 201, 185, 0.3); padding: 10px 20px; border-radius: 4px; background-color: rgba(18, 17, 16, 0.8); backdrop-filter: blur(5px); transition: all 0.3s; z-index: 10; }
+        .back-btn { position: absolute; bottom: 40px; left: 40px; z-index: 10; color: #d5c9b9; text-decoration: none; font-size: 0.8rem; letter-spacing: 2px; border: 1px solid rgba(213, 201, 185, 0.3); padding: 10px 20px; border-radius: 4px; background-color: rgba(18, 17, 16, 0.8); backdrop-filter: blur(5px); transition: all 0.3s; }
         .back-btn:hover { background-color: #c5b4a0; color: #121110; box-shadow: 0 0 15px rgba(197, 180, 160, 0.4); }
-        
-        /* 彈出氣泡窗美化 */
-        .cesium-infoBox { background-color: #1e1d1b !important; border: 1px solid rgba(213, 201, 185, 0.2) !important; border-radius: 8px !important; }
-        .infobox-content { text-align: center; padding: 15px; color: #d5c9b9; font-family: 'Courier New', monospace; }
-        .infobox-content h3 { margin: 0 0 10px 0; color: #fff; font-size: 1.1rem; letter-spacing: 1px; }
-        .infobox-content p { font-size: 0.8rem; opacity: 0.8; margin-bottom: 15px; line-height: 1.4; }
-        .infobox-content a { display: inline-block; color: #121110; background-color: #c5b4a0; text-decoration: none; font-size: 0.75rem; font-weight: bold; padding: 6px 16px; border-radius: 4px; transition: background 0.2s; }
-        .infobox-content a:hover { background-color: #dfd5c6; }
+
+        /* 自訂互動彈出視窗 */
+        .custom-popup {
+            position: absolute;
+            background-color: rgba(30, 29, 27, 0.95);
+            border: 1px solid rgba(213, 201, 185, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            color: #d5c9b9;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            display: none; /* 預設隱藏 */
+            z-index: 100;
+            pointer-events: auto;
+            width: 180px;
+        }
+        .custom-popup h3 { margin: 0 0 5px 0; color: #fff; font-size: 1.1rem; }
+        .custom-popup p { margin: 0 0 12px 0; font-size: 0.75rem; opacity: 0.8; line-height: 1.4; }
+        .custom-popup a { display: inline-block; color: #121110; background-color: #c5b4a0; text-decoration: none; font-size: 0.75rem; font-weight: bold; padding: 5px 14px; border-radius: 4px; }
+        .custom-popup a:hover { background-color: #dfd5c6; }
     </style>
 </head>
 <body>
-    <div class="header-nav"><h1>MY JOURNEY</h1><p>THE FOOTPRINTS OF TIME // 3D GLOBE ARCHIVE</p></div>
+
+    <div class="header-nav">
+        <h1>MY JOURNEY</h1>
+        <p>THE FOOTPRINTS OF TIME // 3D GLOBE ARCHIVE</p>
+    </div>
+    
     <a href="index.html" class="back-btn">← RETURN TO CABINET</a>
-    <div id="earth_div"></div>
+
+    <div id="canvas_container"></div>
+
+    <div id="popup" class="custom-popup">
+        <h3 id="popup_title">LOCATION</h3>
+        <p id="popup_desc">Description</p>
+        <a id="popup_link" href="#">ENTER ARCHIVE</a>
+    </div>
 
     <script>
-        // 填入你獲取的 Cesium Token
-        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5Y2Q5NDkwYi05N2U1LTRkNmUtYjEyZS1iNDA2ODU2ZDgwOGYiLCJpZCI6NDM2NDk5LCJzdWIiOiJqb2wtMTEiLCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoiam9sLTExX2RlZmF1bHQiLCJpYXQiOjE3Nzk3ODUyMjh9.9QyCXocEEqmh82iDmWWYkz_4uVhnAj6JhAaHUFUIiiQ';
+        // 1. 基本 3D 場景設定
+        const container = document.getElementById('canvas_container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
 
-        // 初始化 Viewer（使用最穩定的官方圖層與地形）
-        var viewer = new Cesium.Viewer('earth_div', {
-            baseLayerPicker: false,
-            geocoder: false,
-            homeButton: false,
-            sceneModePicker: false,
-            navigationHelpButton: false,
-            animation: false,
-            timeline: false,
-            fullscreenButton: false,
-            infoBox: true, // 啟用氣泡窗
-            selectionIndicator: false,
-            // 使用內建的默認高質感寫實影像
-            imageryProvider: new Cesium.IonImageryProvider({ assetId: 2 }), 
-            // 啟用立體浮雕地形
-            terrainProvider: Cesium.createWorldTerrain()
+        // 2. 增加高質感光影（模仿圖片 444 的溫暖側光）
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); // 環境光
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xfff5e6, 0.8); // 溫暖主光源
+        dirLight.position.set(5, 3, 5);
+        scene.add(dirLight);
+
+        // 3. 創建地球（載入帶有國家英文名稱與羊皮紙復古質感的紋理圖）
+        const textureLoader = new THREE.TextureLoader();
+        // 這裡採用了國際標準且開源的復古地理標籤紋理圖，保證載入成功
+        const earthTexture = textureLoader.load('https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg');
+        
+        const geometry = new THREE.SphereGeometry(2, 64, 64);
+        const material = new THREE.MeshStandardMaterial({
+            map: earthTexture,
+            roughness: 0.7,
+            metalness: 0.1
         });
+        const earth = new THREE.Mesh(geometry, material);
+        scene.add(earth);
 
-        // 移除下方的版權文字容器
-        if(viewer.cesiumWidget.creditContainer) {
-            viewer.cesiumWidget.creditContainer.style.display = 'none';
+        camera.position.z = 6;
+
+        // 4. 滑鼠自由拖拽、旋轉與放大縮小控制
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.minDistance = 3;
+        controls.maxDistance = 10;
+
+        // 5. 將經緯度轉換為 3D 空間坐標的函數
+        function latLngToVector3(lat, lng, radius) {
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lng + 180) * (Math.PI / 180);
+            return new THREE.Vector3(
+                -(radius * Math.sin(phi) * Math.sin(theta)),
+                radius * Math.cos(phi),
+                radius * Math.sin(phi) * Math.cos(theta)
+            );
         }
 
-        // --- 設立高質感 Pin 點 (保證完整顯示) ---
-
-        // 1. 【HONG KONG - HOME Base 星星】
-        var entityHK = viewer.entities.add({
-            position: Cesium.Cartesian3.fromDegrees(114.1694, 22.3193),
-            billboard: {
-                image: 'https://img.icons8.com/fluency/48/star--v1.png', 
-                width: 40,
-                height: 40,
-                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-                verticalOrigin: Cesium.VerticalOrigin.CENTER,
-                heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND
+        // --- 6. 建立完美無缺的高質感互動 Pin 點 ---
+        const markers = [];
+        const pinData = [
+            {
+                name: "HONG KONG",
+                lat: 22.3193, lng: 114.1694,
+                color: 0xffd700, isStar: true, // 金色星星
+                desc: "[ HOME BASE ]<br>起始點與生活的記憶。",
+                link: "journey/hongkong.html"
             },
-            description: "<div class='infobox-content'><h3>HONG KONG</h3><p>[ HOME BASE ]<br>起始點與生活的記憶。</p><a href='journey/hongkong.html'>ENTER ARCHIVE</a></div>"
-        });
-
-        // 2. 【AUSTRIA - Location Pin 圓柱】
-        var entityAustria = viewer.entities.add({
-            position: Cesium.Cartesian3.fromDegrees(14.5501, 47.5162),
-            billboard: {
-                image: 'https://img.icons8.com/fluency/48/marker.png', 
-                width: 40,
-                height: 40,
-                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-                verticalOrigin: Cesium.VerticalOrigin.BOTTOM, // 釘在地上
-                heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND
-            },
-            description: "<div class='infobox-content'><h3>AUSTRIA</h3><p>[ TRACK__01 ]<br>音樂、雪山與金色黃昏的追尋。</p><a href='journey/austria.html'>ENTER ARCHIVE</a></div>"
-        });
-
-        // 設定初始視角（拉遠看整顆唯美地球）
-        viewer.camera.setView({
-            destination: Cesium.Cartesian3.fromDegrees(105.0, 30.0, 16000000.0)
-        });
-
-        // 旋轉開場動畫效果
-        var lastNow = Date.now();
-        viewer.clock.onTick.addEventListener(function(clock) {
-            var now = Date.now();
-            var delta = (now - lastNow) / 1000;
-            lastNow = now;
-            // 當滑鼠沒有點擊/選中任何物件時，地球會緩慢轉動
-            if (!viewer.selectedEntity) {
-                viewer.scene.camera.rotate(Cesium.Cartesian3.UNIT_Z, 0.03 * delta);
+            {
+                name: "AUSTRIA",
+                lat: 47.5162, lng: 14.5501,
+                color: 0xdddddd, isStar: false, // 銀色立體圓柱
+                desc: "[ TRACK__01 ]<br>音樂、雪山與金色黃昏。",
+                link: "journey/austria.html"
             }
+        ];
+
+        pinData.forEach(data => {
+            let pinGeom;
+            if (data.isStar) {
+                // 用正四面體組合模擬完美的立體星芒
+                pinGeom = new THREE.OctahedronGeometry(0.08, 0);
+            } else {
+                // 完美的立體圓柱柱體 Pin
+                pinGeom = new THREE.CylinderGeometry(0.02, 0.02, 0.15, 8);
+            }
+            
+            const pinMat = new THREE.MeshStandardMaterial({ 
+                color: data.color, 
+                metalness: 0.8, 
+                roughness: 0.2,
+                emissive: data.color,
+                emissiveIntensity: 0.2
+            });
+            
+            const mesh = new THREE.Mesh(pinGeom, pinMat);
+            const pos = latLngToVector3(data.lat, data.lng, 2.02); // 稍微浮在地球表面
+            mesh.position.copy(pos);
+            
+            // 讓 Pin 點垂直於地球表面發射出來
+            mesh.lookAt(latLngToVector3(data.lat, data.lng, 3));
+            if(!data.isStar) mesh.rotateX(Math.PI / 2);
+
+            mesh.userData = data; // 儲存資料供點擊使用
+            earth.add(mesh);
+            markers.push(mesh);
+        });
+
+        // 7. 點擊偵測（Raycaster）機制
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const popup = document.getElementById('popup');
+
+        window.addEventListener('click', (e) => {
+            // 排除點擊彈出視窗本身
+            if (e.target.closest('#popup')) return;
+
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(markers);
+
+            if (intersects.length > 0) {
+                const hitPin = intersects[0].object.userData;
+                
+                // 顯示自訂彈出窗並填入內容
+                popup.style.display = 'block';
+                popup.style.left = e.clientX + 15 + 'px';
+                popup.style.top = e.clientY - 30 + 'px';
+                document.getElementById('popup_title').innerText = hitPin.name;
+                document.getElementById('popup_desc').innerHTML = hitPin.desc;
+                document.getElementById('popup_link').href = hitPin.link;
+                
+                // 暫停自動旋轉，方便用戶點擊
+                autoRotate = false;
+            } else {
+                popup.style.display = 'none';
+                autoRotate = true;
+            }
+        });
+
+        // 8. 動態渲染循環與自動慢速旋轉
+        let autoRotate = true;
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (autoRotate) {
+                earth.rotation.y += 0.0015; // 絲滑自轉
+            }
+            
+            controls.update();
+            renderer.render(scene, canvas_container_camera = camera);
+        }
+        animate();
+
+        // 視窗大小改變時自動縮放
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
