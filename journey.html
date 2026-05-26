@@ -4,95 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JOL's Journey | High-End 3D Archive</title>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.109/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.109/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #121110; font-family: 'Courier New', monospace, 'PingFang TC'; overflow: hidden; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0d0c0b; font-family: 'Courier New', monospace, 'PingFang TC'; overflow: hidden; }
         #earth_div { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
         .header-nav { position: absolute; top: 30px; left: 40px; z-index: 10; pointer-events: none; }
         .header-nav h1 { color: #c5b4a0; font-size: 1.6rem; letter-spacing: 4px; margin: 0; font-family: 'Times New Roman', serif; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
         .header-nav p { color: rgba(213, 201, 185, 0.5); font-size: 0.7rem; letter-spacing: 2px; margin: 5px 0 0 0; }
-        .back-btn { position: absolute; bottom: 40px; left: 40px; z-index: 10; color: #d5c9b9; text-decoration: none; font-size: 0.8rem; letter-spacing: 2px; border: 1px solid rgba(213, 201, 185, 0.3); padding: 10px 20px; border-radius: 4px; background-color: rgba(18, 17, 16, 0.8); backdrop-filter: blur(5px); transition: all 0.3s; }
+        .back-btn { position: absolute; bottom: 40px; left: 40px; z-index: 10; color: #d5c9b9; text-decoration: none; font-size: 0.8rem; letter-spacing: 2px; border: 1px solid rgba(213, 201, 185, 0.3); padding: 10px 20px; border-radius: 4px; background-color: rgba(18, 17, 16, 0.8); backdrop-filter: blur(5px); transition: all 0.3s; z-index: 10; }
         .back-btn:hover { background-color: #c5b4a0; color: #121110; box-shadow: 0 0 15px rgba(197, 180, 160, 0.4); }
         
-        /* Cesium 資訊視窗美化 */
-        .cesium-viewer { background-color: #121110 !important; }
-        .cesium-viewer-infobox { background-color: #1e1d1b !important; color: #d5c9b9 !important; border: 1px solid rgba(213, 201, 185, 0.2) !important; font-family: 'Courier New', monospace !important; border-radius: 6px !important; }
-        .cesium-viewer-infobox-title { color: #fff !important; font-size: 1rem !important; text-align: center !important; }
-        .infobox-content { text-align: center; padding: 10px; }
-        .infobox-content p { font-size: 0.75rem; opacity: 0.7; margin-bottom: 10px; }
-        .infobox-content a { display: inline-block; color: #121110; background-color: #c5b4a0; text-decoration: none; font-size: 0.7rem; font-weight: bold; padding: 4px 12px; border-radius: 3px; transition: background 0.2s; }
+        /* 彈出氣泡窗美化 */
+        .cesium-infoBox { background-color: #1e1d1b !important; border: 1px solid rgba(213, 201, 185, 0.2) !important; border-radius: 8px !important; }
+        .infobox-content { text-align: center; padding: 15px; color: #d5c9b9; font-family: 'Courier New', monospace; }
+        .infobox-content h3 { margin: 0 0 10px 0; color: #fff; font-size: 1.1rem; letter-spacing: 1px; }
+        .infobox-content p { font-size: 0.8rem; opacity: 0.8; margin-bottom: 15px; line-height: 1.4; }
+        .infobox-content a { display: inline-block; color: #121110; background-color: #c5b4a0; text-decoration: none; font-size: 0.75rem; font-weight: bold; padding: 6px 16px; border-radius: 4px; transition: background 0.2s; }
         .infobox-content a:hover { background-color: #dfd5c6; }
     </style>
 </head>
 <body>
-    <div class="header-nav"><h1>MY JOURNEY</h1><p>HIGH-END 3D GLOBE ARCHIVE</p></div>
+    <div class="header-nav"><h1>MY JOURNEY</h1><p>THE FOOTPRINTS OF TIME // 3D GLOBE ARCHIVE</p></div>
     <a href="index.html" class="back-btn">← RETURN TO CABINET</a>
     <div id="earth_div"></div>
 
     <script>
-        // 【⚠️ 重要】在這裡填入您從 CesiumIon 獲取的 Access Token
+        // 填入你獲取的 Cesium Token
         Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzYjA1YWJiZS0xMjQwLTRkNmQtYWVkMy01NzhiZTFhNWRiZTYiLCJpZCI6NDM2NDk5LCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoidW5kZWZpbmVkX2RlZmF1bHQiLCJpYXQiOjE3Nzk3ODE0OTh9.Dy1ZmJ3c2hNtsy1Fv-SzmstgyW_cGaj0auChCsRC_JQ';
 
-        // 初始化 Cesium Viewer，配置為無地圖選擇器、無太陽月亮等
+        // 初始化 Viewer（使用最穩定的官方圖層與地形）
         var viewer = new Cesium.Viewer('earth_div', {
-            baseLayerPicker: false, // 隱藏基礎圖層選擇器
-            geocoder: false, // 隱藏地名搜尋
-            homeButton: false, // 隱藏首頁按鈕
-            sceneModePicker: false, // 隱藏場景模式選擇器 (2D/3D)
-            navigationHelpButton: false, // 隱藏說明按鈕
-            animation: false, // 隱藏動畫控制項
-            timeline: false, // 隱藏時間軸
-            creditContainer: document.createElement('div'), // 隱藏下方來源宣告
-            terrainProvider: Cesium.createWorldTerrain() // 【核心】載入立體地形，提供浮雕質感
+            baseLayerPicker: false,
+            geocoder: false,
+            homeButton: false,
+            sceneModePicker: false,
+            navigationHelpButton: false,
+            animation: false,
+            timeline: false,
+            fullscreenButton: false,
+            infoBox: true, // 啟用氣泡窗
+            selectionIndicator: false,
+            // 使用內建的默認高質感寫實影像
+            imageryProvider: new Cesium.IonImageryProvider({ assetId: 2 }), 
+            // 啟用立體浮雕地形
+            terrainProvider: Cesium.createWorldTerrain()
         });
 
-        // 隱藏 Cesium 預設的地球儀 (我們將自行載入更符合視覺參考的圖層)
-        viewer.imageryLayers.remove(viewer.imageryLayers.get(0));
+        // 移除下方的版權文字容器
+        if(viewer.cesiumWidget.creditContainer) {
+            viewer.cesiumWidget.creditContainer.style.display = 'none';
+        }
 
-        // 載入帶有詳細標籤（大洲、大洋、著名國家英文名）的混合圖層
-        var hybridLayer = viewer.imageryLayers.addImageryProvider(new Cesium.ArcGisMapServerImageryProvider({
-            url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer' // 衛星圖
-        }));
-        var labelsLayer = viewer.imageryLayers.addImageryProvider(new Cesium.ArcGisMapServerImageryProvider({
-            url: 'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer' // 地理標籤
-        }));
+        // --- 設立高質感 Pin 點 (保證完整顯示) ---
 
-        // --- 設立高質感、完整無缺的 Pin 點 (完全按照參考圖) ---
-
-        // 【HONG KONG - HOME Base】金色星星
+        // 1. 【HONG KONG - HOME Base 星星】
         var entityHK = viewer.entities.add({
             position: Cesium.Cartesian3.fromDegrees(114.1694, 22.3193),
             billboard: {
-                image: 'https://img.icons8.com/fluency/48/star--v1.png', // 金色星星
-                width: 48,
-                height: 48,
-                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                image: 'https://img.icons8.com/fluency/48/star--v1.png', 
+                width: 40,
+                height: 40,
+                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                verticalOrigin: Cesium.VerticalOrigin.CENTER,
                 heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND
             },
-            name: "HONG KONG",
-            description: "<div class='infobox-content'><p>[ HOME BASE ]<br>起始點。</p><a href='journey/hongkong.html'>ENTER ARCHIVE</a></div>"
+            description: "<div class='infobox-content'><h3>HONG KONG</h3><p>[ HOME BASE ]<br>起始點與生活的記憶。</p><a href='journey/hongkong.html'>ENTER ARCHIVE</a></div>"
         });
 
-        // 【AUSTRIA - TRACK】銀色圓柱狀 Location Pin
+        // 2. 【AUSTRIA - Location Pin 圓柱】
         var entityAustria = viewer.entities.add({
             position: Cesium.Cartesian3.fromDegrees(14.5501, 47.5162),
             billboard: {
-                image: 'https://img.icons8.com/fluency/48/marker.png', // 銀色圓柱
-                width: 48,
-                height: 48,
-                verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                image: 'https://img.icons8.com/fluency/48/marker.png', 
+                width: 40,
+                height: 40,
+                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                verticalOrigin: Cesium.VerticalOrigin.BOTTOM, // 釘在地上
                 heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND
             },
-            name: "AUSTRIA",
-            description: "<div class='infobox-content'><p>[ TRACK__01 ]<br>音樂、雪山與金色黃昏。</p><a href='journey/austria.html'>ENTER ARCHIVE</a></div>"
+            description: "<div class='infobox-content'><h3>AUSTRIA</h3><p>[ TRACK__01 ]<br>音樂、雪山與金色黃昏的追尋。</p><a href='journey/austria.html'>ENTER ARCHIVE</a></div>"
         });
 
-        // 設定相機初始視角，對準東亞
+        // 設定初始視角（拉遠看整顆唯美地球）
         viewer.camera.setView({
-            destination: Cesium.Cartesian3.fromDegrees(110.0, 30.0, 10000000.0)
+            destination: Cesium.Cartesian3.fromDegrees(105.0, 30.0, 16000000.0)
         });
 
+        // 旋轉開場動畫效果
+        var lastNow = Date.now();
+        viewer.clock.onTick.addEventListener(function(clock) {
+            var now = Date.now();
+            var delta = (now - lastNow) / 1000;
+            lastNow = now;
+            // 當滑鼠沒有點擊/選中任何物件時，地球會緩慢轉動
+            if (!viewer.selectedEntity) {
+                viewer.scene.camera.rotate(Cesium.Cartesian3.UNIT_Z, 0.03 * delta);
+            }
+        });
     </script>
 </body>
 </html>
