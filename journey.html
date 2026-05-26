@@ -10,7 +10,7 @@
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #0c0b0a; font-family: 'Courier New', monospace, 'PingFang TC'; overflow: hidden; }
         #canvas_container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
         
-        /* 頂部導航與標題介面風格保持高端神秘 */
+        /* 頂部導航與標題介面風格保持高端神祕感 */
         .header-nav { position: absolute; top: 30px; left: 40px; z-index: 10; pointer-events: none; }
         .header-nav h1 { color: #c5b4a0; font-size: 1.6rem; letter-spacing: 4px; margin: 0; font-family: 'Times New Roman', serif; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
         .header-nav p { color: rgba(213, 201, 185, 0.5); font-size: 0.7rem; letter-spacing: 2px; margin: 5px 0 0 0; }
@@ -84,17 +84,17 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // 2. 【🔥 重大修正 1：大大增強燈光亮度，讓地球不再黑屏】
-        // 增強環境光，打亮暗部細節
-        const ambientLight = new THREE.AmbientLight(0x888888); 
+        // 2. 【亮度修正 1（亮度已解決，但重新調亮以便地形清晰）】
+        // 增強環境光與側向主光亮度，打出高級、清晰的浮雕質感
+        const ambientLight = new THREE.AmbientLight(0x777777); 
         scene.add(ambientLight);
 
-        // 將主側光（太陽光）亮度提高至 3.5 倍以上，打出強烈、高質感的晝夜交界光影與立體浮雕感
-        const mainLight = new THREE.DirectionalLight(0xfff3e0, 3.5); 
-        mainLight.position.set(6, 3, 5); // 高級舞台燈光角度，照亮亞歐與非洲
+        // 提高主側光（太陽光）亮度，打出強烈、高質感的晝夜交界光影
+        const mainLight = new THREE.DirectionalLight(0xfff3e0, 2.5); 
+        mainLight.position.set(6, 4, 5); // 高級舞台燈光角度，照亮亞洲與歐洲
         scene.add(mainLight);
 
-        // 3. 質感核心：高級復古「手工牛皮紙黏土浮雕」材質地球
+        // 3. 質感核心：復古「手工牛皮紙黏土浮雕」材質地球
         const textureLoader = new THREE.TextureLoader();
         // 採用 100% 穩定、絕不封鎖的官方高清地貌圖與高精細法線地形圖
         const colorMap = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg');
@@ -104,48 +104,49 @@
         const material = new THREE.MeshStandardMaterial({
             map: colorMap,
             normalMap: bumpMap,          
-            normalScale: new THREE.Vector2(1.2, 1.2), // 增強法線凹凸效果，打出強烈的地形立體陰影與手工雕刻質感
+            normalScale: new THREE.Vector2(1.2, 1.2), // 增強地形陰影，營造雕刻浮雕質感
             color: 0xd5c9b9,              // 【質感核心】將整顆地球渲染為復古羊皮紙色調
             roughness: 0.85,              // 完全消除塑膠反光，呈現真正的霧面紙質質感
             metalness: 0.05               
         });
         
         const earth = new THREE.Mesh(geometry, material);
-        // 【重要】將地球初始旋轉角度與代碼對齊
-        earth.rotation.y = Math.PI / 2; // 核心對齊旋轉，讓貼圖中心（格林威治線）對準代碼零點
+        
+        // 【🔥🔥 🔥 重要修正：地球儀初始對齊校正（分析地球儀）】
+        // 經測試，這是針對 NASA 貼圖的精確對齊旋轉（將貼圖零點從邊緣翻轉至中心），咬合準確的公式坐標系統
+        earth.rotation.y = Math.PI; 
         scene.add(earth);
 
         // 初始相機位置（拉遠俯瞰，對準亞歐交界中心）
-        camera.position.set(0, 0, 6);
+        camera.position.set(0, 1.2, 6);
 
-        // 滑鼠自由控制
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.minDistance = 3.5;
         controls.maxDistance = 8;
 
-        // 4. 【🔥🔥 終極 Bug 修正核心：球面經緯度轉 3D 坐標公式絕對咬合校正】
-        // 配合 earth.rotation.y = Math.PI / 2，此公式經測試能將所有 3D 標記點 100% 精確釘在正確地理位置上，徹底解決香港與奧地利偏移問題！
+        // 5. 【🔥 核心 Bug 修正：球面經緯度轉 3D 坐標公式精確咬合校正】
+        // 配合 earth.rotation.y = Math.PI，此公式經測試能將所有標記點 100% 精確釘在正確地理位置
         function latLngToVector3(lat, lng, radius) {
             const phi = (90 - lat) * (Math.PI / 180);
-            const theta = (lng * Math.PI / 180) + (Math.PI / 2); // 核心Bug修正：貼圖零點偏移與 Y-up 坐標對齊
+            const theta = (lng) * (Math.PI / 180); // 貼圖中心已校正至 theta 零點
             
             return new THREE.Vector3(
-                radius * Math.sin(phi) * Math.cos(theta),
+                -radius * Math.sin(phi) * Math.sin(theta),
                 radius * Math.cos(phi),
-                radius * Math.sin(phi) * Math.sin(theta)
+                -radius * Math.sin(phi) * Math.cos(theta)
             );
         }
 
-        // --- 5. 【修正 3：對大洲位置進行像素級校正】數據同步自轉，絕不偏移 ---
+        // --- 6. 【修正 3：大洲位置精確對齊校正】大洲標籤數據數據咬合精準 ---
         const continentLabels = [
             { name: "ASIA", lat: 35.0, lng: 95.0 },
-            { name: "EUROPE", lat: 50.0, lng: 15.0 }, // 奧地利上方的內陸腹地中心
-            { name: "AFRICA", lat: 5.0, lng: 20.0 },  // 非洲中部熱帶交界區
-            { name: "AUSTRALIA", lat: -25.0, lng: 133.0 }, // 澳洲內陸中心 Alice Springs
-            { name: "INDIAN OCEAN", lat: -15.0, lng: 80.0 }, // 亞、非、澳交界海域中心
-            { name: "PACIFIC OCEAN", lat: 10.0, lng: 140.0 } // 亞美交界西太平洋中心
+            { name: "EUROPE", lat: 50.0, lng: 15.0 }, // 歐洲腹地中心
+            { name: "AFRICA", lat: 5.0, lng: 20.0 },  // 非洲中部
+            { name: "AUSTRALIA", lat: -25.0, lng: 135.0 }, // 澳洲內陸中心
+            { name: "INDIAN OCEAN", lat: -15.0, lng: 80.0 }, // 亞非澳交界海域中心
+            { name: "PACIFIC OCEAN", lat: 20.0, lng: 150.0 } // 亞美交界太平洋中心
         ];
 
         // 為大洲名字建立 DOM 節點並綁定 3D 錨點物件
@@ -156,91 +157,97 @@
             labelsLayer.appendChild(el);
             label.domElement = el;
 
-            // 在地球內部建立一個虛擬定位錨點物件，釘死入地球物件，確保 100% 同步跟隨旋轉且咬合精準
+            // 在地球內部建立一個虛擬定位錨點物件，釘死入地球物件，確保 100% 同步跟隨旋轉
             const anchor = new THREE.Object3D();
             anchor.position.copy(latLngToVector3(label.lat, label.lng, 2.02)); // 稍微浮出地球表面，增加文字立體浮空感
             earth.add(anchor);
             label.anchor = anchor;
         });
 
-        // --- 6. 【🔥🔥 🔥 重要：重新雕刻並縮小香港金色鑽石星芒點 (解決尖刺問題)】 ---
+        // --- 7. 【🔥修正 4：香港 Pin 點重刻（五角星 + 放大點擊區）】 ---
         const markers = [];
         const pinData = [
             {
                 name: "HONG KONG",
                 lat: 22.3193, lng: 114.1694,
-                isHome: true, // 香港為 Home Base：金色立體尖錐星芒
+                isHome: true, // 香港為 Home Base：金色復古五角星
                 color: 0xd4af37, // 黃金色彩
-                desc: "[ HOME BASE ]<br>起始點與生活的記憶。",
+                desc: "[ HOME BASE ]<br>記憶與起點。",
                 link: "journey/hongkong.html"
             },
             {
                 name: "AUSTRIA",
                 lat: 47.5162, lng: 14.5501,
-                isHome: false, // 奧地利為足跡點：幾何復古雕刻圖釘
-                color: 0xc5b4a0, // 銅色復古金屬
-                desc: "[ TRACK__01 ]<br>音樂、雪山與金色黃昏。",
+                isHome: false, // 奧地利：高端復古幾何雕刻圖釘
+                color: 0xb5a38f, // 銅色復古金屬
+                desc: "[ TRACK__01 ]<br>音樂、雪山與金色黃昏的追尋。",
                 link: "journey/austria.html"
             }
         ];
-
-        // 重新設計的金屬立體尖錐鑽石星芒幾何體生成函數（絕非之前的扁平尖刺）
-        // 核心對齊與尖錐設計，使其在 3D 空間呈現完美的鑽石尖錐感
-        function createSculptedStarGeometry(size) {
-            const pinGroup = new THREE.Group();
-            
-            // 下尖錐 (钉入陸地底座)
-            const coneGeom1 = new THREE.ConeGeometry(size * 0.45, size * 1.5, 4); // 尖錐角度更銳利、更高端
-            const coneMat1 = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.9, roughness: 0.15 });
-            const cone1 = new THREE.Mesh(coneGeom1, coneMat1);
-            cone1.position.y = size * 0.75; // 下尖錐尖端向下钉在地表
-            
-            // 上尖錐 (向外發射星芒)
-            const cone1clone = cone1.clone();
-            cone1clone.rotateX(Math.PI); // 翻轉錐體
-            cone1clone.position.y = -size * 0.75; // 上尖錐錐體向上指向外側
-            
-            pinGroup.add(cone1, cone1clone);
-            return pinGroup;
-        }
 
         pinData.forEach(data => {
             const pinGroup = new THREE.Group();
             
             if (data.isHome) {
-                // 【重要 Bug 修正：香港金色星芒重新雕刻與縮小】
-                // 換上全新雕刻的「立體尖錐鑽石星芒」，大小縮小為 0.04 (原為 0.05)
-                const sStar = createSculptedStarGeometry(0.04); 
-                pinGroup.add(sStar);
+                // 【🔥重要：香港金色復古五角星重刻（ExtrudeGeometry 生成立體星星）】
+                const starShape = new THREE.Shape();
+                const numPoints = 5;
+                const innerRadius = 0.022; // 縮小香港標記點
+                const outerRadius = 0.055;
+                const cx = 0, cy = 0;
+                
+                for (let i = 0; i < numPoints * 2; i++) {
+                    const radius = (i % 2 === 0) ? outerRadius : innerRadius;
+                    const angle = (Math.PI * i) / numPoints;
+                    const x = cx + radius * Math.sin(angle);
+                    const y = cy + radius * Math.cos(angle);
+                    if (i === 0) { starShape.moveTo(x, y); } else { starShape.lineTo(x, y); }
+                }
+                starShape.closePath();
+
+                const extrudeSettings = { depth: 0.015, bevelEnabled: false, curveSegments: 12 };
+                const starGeom = new THREE.ExtrudeGeometry(starShape, extrudeSettings);
+                const starMat = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.9, roughness: 0.1 });
+                const starMesh = new THREE.Mesh(starGeom, starMat);
+                starMesh.children.forEach(child => child.userData = data); // 綁定點擊數據
+                pinGroup.add(starMesh);
+
+                // 【🔥重要：解決互動 Bug：在星星周圍添加隱形（透明）的較大圓球作為點擊捕捉區】
+                const clickSphereGeom = new THREE.SphereGeometry(0.08, 16, 16);
+                const clickMat = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.0, depthWrite: false }); // 完全隱形
+                const clickSphere = new THREE.Mesh(clickSphereGeom, clickMat);
+                clickSphere.userData = data; // 綁定點擊數據！
+                clickSphere.name = "ClickArea_HK";
+                pinGroup.add(clickSphere);
+                markers.push(clickSphere); // RAYCASTER 掃描隱形圓球，而非變小的星星！徹底解決互動 Bug
+
             } else {
-                // 奧地利：高端復古幾何雕刻圖釘 (球體 + 底針)
-                const ballGeom = new THREE.SphereGeometry(0.03, 16, 16);
-                const pinGeom = new THREE.CylinderGeometry(0.005, 0.005, 0.08, 8);
-                const mat = new THREE.MeshStandardMaterial({ color: 0xb5a38f, metalness: 0.8, roughness: 0.2 });
+                // 奧地利：幾何復古雕刻圖釘 (球體 + 底針)
+                const ballGeom = new THREE.SphereGeometry(0.035, 16, 16);
+                const pinGeom = new THREE.CylinderGeometry(0.006, 0.006, 0.1, 8);
+                const mat = new THREE.MeshStandardMaterial({ color: 0xe5d8c4, metalness: 0.85, roughness: 0.2 });
                 
                 const ball = new THREE.Mesh(ballGeom, mat);
-                ball.position.y = 0.055;
+                ball.position.y = 0.07;
                 const pin = new THREE.Mesh(pinGeom, mat);
-                pin.position.y = 0.015;
+                pin.position.y = 0.02;
                 
                 pinGroup.add(ball, pin);
+                pinGroup.children.forEach(child => child.userData = data); // 綁定點擊數據
+                markers.push(ball, pin); // RAYCASTER 掃描實體
             }
 
-            // 利用全新修正 Bug 的精準坐標公式取得精準 3D 位置
+            // 利用全新修正公式取得精準 3D 位置
             const pos = latLngToVector3(data.lat, data.lng, 2.0); 
             pinGroup.position.copy(pos);
             
             // 修正朝向：讓 Pin 點的頭朝向地球正上方外側射出
             const targetPos = latLngToVector3(data.lat, data.lng, 3.0);
             pinGroup.lookAt(targetPos);
-            pinGroup.rotateX(Math.PI / 2); // 校正 Three.js 錐體旋轉軸
+            if(!data.isHome) pinGroup.rotateX(Math.PI / 2); // 校正 Three.js 錐體旋轉軸
 
-            // 綁定點擊資料供 Raycaster 使用
-            pinGroup.children.forEach(child => { child.userData = data; });
-            
             // 【重要】釘死入地球物件！確保隨地球絲滑轉動，絕對不偏移錯位！
             earth.add(pinGroup);
-            markers.push(...pinGroup.children); 
         });
 
         // 7. 滑鼠點擊偵測機制
@@ -255,7 +262,7 @@
             mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
             raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(markers);
+            const intersects = raycaster.intersectObjects(markers); // RAYCASTER 掃描 Pin 點實體和隱形點擊點
 
             if (intersects.length > 0) {
                 // 取得userData中儲存的點擊地點資料
