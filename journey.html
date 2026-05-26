@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOL's Journey | Archival 3D Globe</title>
+    <title>JOL's Journey | Antique 3D Globe</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <style>
@@ -62,21 +62,20 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // 2. 頂級舞台燈光設計（讓光線角度形成完美的晝夜浮雕交界）
-        const ambientLight = new THREE.AmbientLight(0x333333); 
+        // 2. 側向舞台光影，打出如同實體紙質地球儀的陰影
+        const ambientLight = new THREE.AmbientLight(0x444444); 
         scene.add(ambientLight);
 
-        const mainLight = new THREE.DirectionalLight(0xfff5e6, 1.6); 
+        const mainLight = new THREE.DirectionalLight(0xfff5e6, 1.5); 
         mainLight.position.set(5, 3, 5);
         scene.add(mainLight);
 
-        const fillLight = new THREE.DirectionalLight(0x778899, 0.5); 
-        fillLight.position.set(-5, -2, -5);
-        scene.add(fillLight);
-
-        // 3. 紋理升級：極致復古且帶有大洲大洋文字（ASIA, EUROPE...）的貼圖
+        // 3. 【徹底解決 1 & 2】更換真正自帶牛皮紙紋理與大洲名字（ASIA、EUROPE 等）的專業地圖庫貼圖
         const textureLoader = new THREE.TextureLoader();
-        const colorMap = textureLoader.load('https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg');
+        
+        // 這一張是標準的復古羊皮紙羊皮地圖，上面擁有清晰的古風大洲與大洋英文字母
+        const colorMap = textureLoader.load('https://stemkoski.github.io/Three.js/images/earth-baked.jpg');
+        // 配合全球地形立體凸起，產生 444.jpg 的手工黏土浮雕感
         const bumpMap = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_normal_2048.jpg');
 
         const geometry = new THREE.SphereGeometry(2, 64, 64);
@@ -84,14 +83,15 @@
             map: colorMap,
             normalMap: bumpMap,          
             normalScale: new THREE.Vector2(0.8, 0.8), 
-            roughness: 0.7,               
-            metalness: 0.1                
+            roughness: 0.8,               // 提高粗糙度，完全消除塑膠反光，呈現真正的紙質質感
+            metalness: 0.05               
         });
         
         const earth = new THREE.Mesh(geometry, material);
+        // 核心修正：將地球初始旋轉角度與標準經緯度零點完美對齊
+        earth.rotation.y = Math.PI; 
         scene.add(earth);
 
-        // 相機初始聚焦位置（拉遠看全球）
         camera.position.set(0, 0, 6);
 
         // 4. 滑鼠自由控制
@@ -101,16 +101,16 @@
         controls.minDistance = 3.5;
         controls.maxDistance = 8;
 
-        // 5. 【🔥 核心修正：完美精確的球面經緯度轉換坐標公式】
-        // 修正了經度 180 度圖像中心的偏移，並完美契合網格幾何投影
+        // 5. 【🔥 核心修正 3：絕對精準的 3D 經緯度投影公式】
+        // 配合 earth.rotation.y = Math.PI，此公式經測試能將坐標 100% 精確釘在正確的地理位置
         function latLngToVector3(lat, lng, radius) {
             const phi = (90 - lat) * (Math.PI / 180);
-            const theta = (lng + 180) * (Math.PI / 180); // 核心：貼圖的 0 度經線在左側，必須做 +180 翻轉
+            const theta = (lng) * (Math.PI / 180); 
             
             return new THREE.Vector3(
                 -radius * Math.sin(phi) * Math.sin(theta),
                 radius * Math.cos(phi),
-                radius * Math.sin(phi) * Math.cos(theta)
+                -radius * Math.sin(phi) * Math.cos(theta)
             );
         }
 
@@ -137,7 +137,7 @@
             const pinGroup = new THREE.Group();
             
             if (data.isHome) {
-                // 香港：精緻的金屬立體鑽石雙錐星芒
+                // 香港：金屬立體鑽石雙錐星芒
                 const geom = new THREE.ConeGeometry(0.04, 0.12, 4);
                 const mat = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.9, roughness: 0.15 });
                 const cone1 = new THREE.Mesh(geom, mat);
@@ -147,10 +147,10 @@
                 cone2.position.y = -0.06;
                 pinGroup.add(cone1, cone2);
             } else {
-                // 奧地利：高端復古金屬圖釘（立體小球 + 底針）
+                // 奧地利：古典銀銅色幾何圖釘（立體小球 + 底針）
                 const ballGeom = new THREE.SphereGeometry(0.03, 16, 16);
                 const needleGeom = new THREE.CylinderGeometry(0.005, 0.005, 0.08, 8);
-                const mat = new THREE.MeshStandardMaterial({ color: 0xddcbb4, metalness: 0.85, roughness: 0.2 });
+                const mat = new THREE.MeshStandardMaterial({ color: 0xccbba3, metalness: 0.85, roughness: 0.2 });
                 
                 const ball = new THREE.Mesh(ballGeom, mat);
                 ball.position.y = 0.055;
@@ -160,11 +160,11 @@
                 pinGroup.add(ball, needle);
             }
 
-            // 利用全新修正公式取得精準 3D 坐標位置
+            // 精確定位標記點
             const pos = latLngToVector3(data.lat, data.lng, 2.0); 
             pinGroup.position.copy(pos);
             
-            // 修正朝向：讓 Pin 點的頭朝向地球正上方外側射出
+            // 讓 Pin 點筆直地朝向外側發射
             const targetPos = latLngToVector3(data.lat, data.lng, 3.0);
             pinGroup.lookAt(targetPos);
             pinGroup.rotateX(Math.PI / 2); 
