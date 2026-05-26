@@ -30,102 +30,78 @@
     <div id="earth_div"></div>
 
     <script>
-        // 你的精確 Token 已為你完美保留
+        // 填入你獲取的 Cesium Token
         Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5Y2Q5NDkwYi05N2U1LTRkNmUtYjEyZS1iNDA2ODU2ZDgwOGYiLCJpZCI6NDM2NDk5LCJzdWIiOiJqb2wtMTEiLCJpc3MiOiJodHRwczovL2FwaS5jZXNpdW0uY29tIiwiYXVkIjoiam9sLTExX2RlZmF1bHQiLCJpYXQiOjE3Nzk3ODUyMjh9.9QyCXocEEqmh82iDmWWYkz_4uVhnAj6JhAaHUFUIiiQ';
 
-        // 1. 修正初始化配置：利用全新非同步語法載入立體地形
-        async function initEarth() {
-            try {
-                // 先安全地獲取全球地形資料
-                const terrainProvider = await Cesium.Terrain.fromWorldTerrain();
+        // 初始化 Viewer（使用最穩定的官方圖層與地形）
+        var viewer = new Cesium.Viewer('earth_div', {
+            baseLayerPicker: false,
+            geocoder: false,
+            homeButton: false,
+            sceneModePicker: false,
+            navigationHelpButton: false,
+            animation: false,
+            timeline: false,
+            fullscreenButton: false,
+            infoBox: true, // 啟用氣泡窗
+            selectionIndicator: false,
+            // 使用內建的默認高質感寫實影像
+            imageryProvider: new Cesium.IonImageryProvider({ assetId: 2 }), 
+            // 啟用立體浮雕地形
+            terrainProvider: Cesium.createWorldTerrain()
+        });
 
-                var viewer = new Cesium.Viewer('earth_div', {
-                    baseLayerPicker: false,
-                    geocoder: false,
-                    homeButton: false,
-                    sceneModePicker: false,
-                    navigationHelpButton: false,
-                    animation: false,
-                    timeline: false,
-                    fullscreenButton: false,
-                    infoBox: true,
-                    selectionIndicator: false,
-                    terrainProvider: terrainProvider // 成功注入 3D 地形
-                });
-
-                // 移除下方的 Cesium 官方文字
-                if(viewer.cesiumWidget.creditContainer) {
-                    viewer.cesiumWidget.creditContainer.style.display = 'none';
-                }
-
-                // 清理掉預設的黑底地圖圖層，重新注入高質感的開源地圖
-                viewer.imageryLayers.removeAll();
-
-                // 2. 注入 OpenStreetMap 圖層（包含完整大洲、海洋、國家英文標籤）
-                var openStreetMapLayer = viewer.imageryLayers.addImageryProvider(
-                    new Cesium.UrlTemplateImageryProvider({
-                        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        subdomains: ['a', 'b', 'c']
-                    })
-                );
-
-                // 微調地圖基調，呈現極具藝術沉澱感的暗色復古濾鏡效果
-                openStreetMapLayer.brightness = 0.65;
-                openStreetMapLayer.contrast = 1.2;
-
-                // --- 3. 設立高質感、完整無缺的標記點 ---
-
-                // 香港 - HOME Base（金色星星）
-                viewer.entities.add({
-                    position: Cesium.Cartesian3.fromDegrees(114.1694, 22.3193),
-                    billboard: {
-                        image: 'https://img.icons8.com/fluency/48/star--v1.png', 
-                        width: 40,
-                        height: 40,
-                        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-                        verticalOrigin: Cesium.VerticalOrigin.CENTER,
-                        heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND
-                    },
-                    description: "<div class='infobox-content'><h3>HONG KONG</h3><p>[ HOME BASE ]<br>起始點與生活的記憶。</p><a href='journey/hongkong.html'>ENTER ARCHIVE</a></div>"
-                });
-
-                // 奧地利 - Location Pin（圓柱標記）
-                viewer.entities.add({
-                    position: Cesium.Cartesian3.fromDegrees(14.5501, 47.5162),
-                    billboard: {
-                        image: 'https://img.icons8.com/fluency/48/marker.png', 
-                        width: 40,
-                        height: 40,
-                        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM, 
-                        heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND
-                    },
-                    description: "<div class='infobox-content'><h3>AUSTRIA</h3><p>[ TRACK__01 ]<br>音樂、雪山與金色黃昏的追尋。</p><a href='journey/austria.html'>ENTER ARCHIVE</a></div>"
-                });
-
-                // 設定相機初始視角（拉遠俯瞰帶有標籤的圓潤地球）
-                viewer.camera.setView({
-                    destination: Cesium.Cartesian3.fromDegrees(105.0, 30.0, 16000000.0)
-                });
-
-                // 絲滑自動慢速旋轉開場
-                var lastNow = Date.now();
-                viewer.clock.onTick.addEventListener(function(clock) {
-                    var now = Date.now();
-                    var delta = (now - lastNow) / 1000;
-                    lastNow = now;
-                    if (!viewer.selectedEntity) {
-                        viewer.scene.camera.rotate(Cesium.Cartesian3.UNIT_Z, 0.04 * delta);
-                    }
-                });
-
-            } catch (error) {
-                console.error("Cesium 初始化發生錯誤: ", error);
-            }
+        // 移除下方的版權文字容器
+        if(viewer.cesiumWidget.creditContainer) {
+            viewer.cesiumWidget.creditContainer.style.display = 'none';
         }
 
-        // 啟動執行
-        initEarth();
+        // --- 設立高質感 Pin 點 (保證完整顯示) ---
+
+        // 1. 【HONG KONG - HOME Base 星星】
+        var entityHK = viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(114.1694, 22.3193),
+            billboard: {
+                image: 'https://img.icons8.com/fluency/48/star--v1.png', 
+                width: 40,
+                height: 40,
+                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                verticalOrigin: Cesium.VerticalOrigin.CENTER,
+                heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND
+            },
+            description: "<div class='infobox-content'><h3>HONG KONG</h3><p>[ HOME BASE ]<br>起始點與生活的記憶。</p><a href='journey/hongkong.html'>ENTER ARCHIVE</a></div>"
+        });
+
+        // 2. 【AUSTRIA - Location Pin 圓柱】
+        var entityAustria = viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(14.5501, 47.5162),
+            billboard: {
+                image: 'https://img.icons8.com/fluency/48/marker.png', 
+                width: 40,
+                height: 40,
+                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                verticalOrigin: Cesium.VerticalOrigin.BOTTOM, // 釘在地上
+                heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND
+            },
+            description: "<div class='infobox-content'><h3>AUSTRIA</h3><p>[ TRACK__01 ]<br>音樂、雪山與金色黃昏的追尋。</p><a href='journey/austria.html'>ENTER ARCHIVE</a></div>"
+        });
+
+        // 設定初始視角（拉遠看整顆唯美地球）
+        viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(105.0, 30.0, 16000000.0)
+        });
+
+        // 旋轉開場動畫效果
+        var lastNow = Date.now();
+        viewer.clock.onTick.addEventListener(function(clock) {
+            var now = Date.now();
+            var delta = (now - lastNow) / 1000;
+            lastNow = now;
+            // 當滑鼠沒有點擊/選中任何物件時，地球會緩慢轉動
+            if (!viewer.selectedEntity) {
+                viewer.scene.camera.rotate(Cesium.Cartesian3.UNIT_Z, 0.03 * delta);
+            }
+        });
     </script>
 </body>
 </html>
