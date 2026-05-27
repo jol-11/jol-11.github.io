@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JOL's Archive</title>
     <style>
-        /* 全局深色粗糙基底 */
+        /* 全局深色底，100% 打字機字體 */
         body {
             margin: 0;
             padding: 0;
             background-color: #121110;
             background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 0);
             background-size: 4px 4px;
-            font-family: 'Courier New', Courier, monospace, 'PingFang TC';
+            font-family: 'Courier New', Courier, monospace;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -20,7 +20,7 @@
             overflow: hidden;
         }
 
-        /* 1. 專屬名字簽名區域 (JOLINE CHU) */
+        /* 1. 頂部名字 (JOL CHU) - 縮小、無粗體 */
         .brand-signature {
             position: absolute;
             top: 40px;
@@ -29,26 +29,13 @@
             pointer-events: none;
         }
         .brand-signature h1 {
-            /* 引入古典羅馬襯線體，模擬 Goldoni 的優雅與歷史感 */
-            font-family: 'Times New Roman', Times, 'Georgia', serif;
-            font-size: 1.8rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.3rem; /* 縮小尺寸 */
             margin: 0;
-            letter-spacing: 5px;
-            font-weight: bold;
-            /* 復古微金屬光澤效果 */
-            color: #c5b4a0;
-            background: linear-gradient(135deg, #dfd5c6 0%, #b39f88 50%, #8c765c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            letter-spacing: 4px;
+            font-weight: normal; /* 移除粗體 */
+            color: #ffffff;
             opacity: 0.9;
-        }
-        .brand-signature p {
-            margin: 5px 0 0 2px;
-            font-size: 0.65rem;
-            color: rgba(213, 201, 185, 0.4);
-            letter-spacing: 2px;
-            text-transform: uppercase;
         }
 
         /* 點擊外圍復原的隱形背景遮罩 */
@@ -71,7 +58,7 @@
             align-items: center;
             justify-content: center;
             z-index: 2;
-            margin-top: 40px; /* 給頂部名字留出一點空間 */
+            margin-top: 40px;
         }
 
         /* 通用文件夾樣式 */
@@ -81,13 +68,12 @@
             width: 360px;
             border-radius: 4px 16px 16px 4px;
             box-shadow: -15px 10px 40px rgba(0, 0, 0, 0.6);
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s, opacity 0.4s;
             cursor: pointer;
             overflow: hidden;
             border-left: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* 讓圖片完美覆蓋文件夾封面，並加上一層暗色濾鏡沉澱質感 */
         .folder-bg {
             position: absolute;
             top: 0;
@@ -96,39 +82,32 @@
             height: 100%;
             background-size: cover;
             background-position: center;
-            filter: brightness(0.7) contrast(1.15);
+            filter: brightness(0.6) contrast(1.2);
             transition: filter 0.5s;
         }
         
-        /* 當文件夾被抽出時，圖片恢復原本的藝術色彩 */
         .file-folder.pulled-out .folder-bg {
-            filter: brightness(0.95) contrast(1.1);
+            filter: brightness(0.85) contrast(1.15);
         }
 
-        /* --- 套用你上傳的 111, 222, 333 圖片 --- */
-        .folder-about .folder-bg {
-            background-image: url('111.jpg');
-        }
-        .folder-journey .folder-bg {
-            background-image: url('222.jpg');
-        }
-        .folder-collections .folder-bg {
-            background-image: url('333.jpg');
-        }
+        /* 導入背景相片 */
+        .folder-about .folder-bg { background-image: url('111.jpg'); }
+        .folder-journey .folder-bg { background-image: url('222.jpg'); }
+        .folder-collections .folder-bg { background-image: url('333.jpg'); }
 
-        /* 文件夾疊加位置 */
+        /* 文件夾疊加位置 (電腦版) */
         .folder-about { left: 10%; z-index: 10; }
         .folder-journey { left: 33%; z-index: 20; }
         .folder-collections { left: 56%; z-index: 30; }
 
-        /* 文件夾側邊實體標籤 (Tabs) */
+        /* 文件夾側邊標籤 (Tabs) - 無粗體 */
         .file-tab {
             position: absolute;
             top: 40px;
             right: 0;
             width: 38px;
             height: 140px;
-            background-color: #1e1d1b; /* 沉穩的深木色/紙質色標籤 */
+            background-color: #1e1d1b;
             border-radius: 0 8px 8px 0;
             border: 1px solid rgba(255,255,255,0.1);
             border-left: none;
@@ -141,50 +120,44 @@
         .file-tab span {
             writing-mode: vertical-rl;
             color: #d5c9b9;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             letter-spacing: 3px;
-            font-weight: bold;
-            opacity: 0.8;
+            font-weight: normal; /* 移除粗體 */
+            opacity: 0.7;
+            font-family: 'Courier New', Courier, monospace;
         }
 
-        /* 封面文字與排版 */
+        /* 封面文字排版：保留在上方，搭配頂部暗色遮罩 */
         .folder-meta {
             position: relative;
-            padding: 35px;
+            padding: 40px;
             color: #fff;
             height: 100%;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start; /* 控制標題保留在上方 */
             z-index: 3;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 40%, rgba(0,0,0,0.7) 100%);
+            /* 改為向下的暗色漸變，保護頂部文字不被亮圖吃掉 */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 60%);
         }
         
         .folder-meta h2 {
-            font-size: 1.8rem;
-            margin: 5px 0 0 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.3rem; /* 縮小尺寸 */
+            margin: 0;
             letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
-            font-weight: 400;
-        }
-        .code-num {
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            opacity: 0.7;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            font-weight: normal; /* 移除粗體 */
         }
 
-        /* --- 核心互動狀態 --- */
-
-        /* 點擊一次拉出 */
+        /* 互動狀態 */
         .file-folder.pulled-out {
             transform: translate(-30px, -30px);
             box-shadow: -25px 25px 60px rgba(0, 0, 0, 0.8);
             z-index: 50;
         }
 
-        /* 點擊第二次打開 */
         .file-folder.opened {
             transform: translate(-80px, -30px) scale(1.15);
             opacity: 0;
@@ -195,18 +168,76 @@
         .info-tip {
             position: absolute;
             bottom: 30px;
-            color: rgba(213,201,185,0.25);
-            font-size: 0.7rem;
+            color: rgba(213,201,185,0.18);
+            font-size: 0.65rem;
             letter-spacing: 2px;
             pointer-events: none;
+        }
+
+        /* ===================================================
+           📱 手機端自適應排版（等比例縮減尺寸、無粗體）
+           =================================================== */
+        @media (max-width: 768px) {
+            .brand-signature {
+                top: 35px;
+                left: 35px;
+            }
+            .brand-signature h1 {
+                font-size: 1.1rem;
+                letter-spacing: 3px;
+            }
+
+            .cabinet-wrapper {
+                width: 100vw;
+                height: 460px;
+                margin-top: 60px;
+            }
+
+            .file-folder {
+                width: 62vw;
+                height: 100%;
+            }
+
+            .folder-about { left: 4%; }
+            .folder-journey { left: 20%; }
+            .folder-collections { left: 36%; }
+
+            .file-tab {
+                width: 28px;
+                height: 100px;
+            }
+            .file-tab span {
+                font-size: 0.6rem;
+                letter-spacing: 1px;
+            }
+
+            .folder-about .file-tab { top: 30px; }
+            .folder-journey .file-tab { top: 150px; }
+            .folder-collections .file-tab { top: 270px; }
+
+            .folder-meta { padding: 25px; }
+            .folder-meta h2 { font-size: 1.1rem; }
+            
+            .file-folder.pulled-out {
+                transform: translate(-15px, -20px);
+            }
+            .file-folder.opened {
+                transform: translate(-30px, -20px) scale(1.05);
+            }
+
+            .info-tip {
+                bottom: 20px;
+                font-size: 0.55rem;
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="brand-signature">
-        <h1>JOLINE CHU</h1>
-        <p>Private Digital Cabinet</p>
+        <h1>JOL CHU</h1>
     </div>
 
     <div class="bg-overlay" id="overlay"></div>
@@ -216,13 +247,7 @@
         <div class="file-folder folder-about" data-link="about.html">
             <div class="folder-bg"></div>
             <div class="folder-meta">
-                <div>
-                    <div class="code-num">CODE__001 // ARCHIVE</div>
-                    <h2>ABOUT ME</h2>
-                </div>
-                <div style="font-size: 0.75rem; opacity: 0.7;">
-                    TYPE : IDENTITY
-                </div>
+                <h2>ABOUT ME</h2>
             </div>
             <div class="file-tab"><span>ABOUT ME</span></div>
         </div>
@@ -230,29 +255,17 @@
         <div class="file-folder folder-journey" data-link="journey.html">
             <div class="folder-bg"></div>
             <div class="folder-meta">
-                <div>
-                    <div class="code-num">CODE__002 // FALLING</div>
-                    <h2>MY JOURNEY</h2>
-                </div>
-                <div style="font-size: 0.75rem; opacity: 0.7;">
-                    [ TIMELINE.LOG ]
-                </div>
+                <h2>MY JOURNEY</h2>
             </div>
-            <div class="file-tab" style="top: 190px;"><span>MY JOURNEY</span></div>
+            <div class="file-tab"><span>MY JOURNEY</span></div>
         </div>
 
         <div class="file-folder folder-collections" data-link="collections.html">
             <div class="folder-bg"></div>
             <div class="folder-meta">
-                <div>
-                    <div class="code-num">CODE__003 // SIGNAL</div>
-                    <h2>COLLECTIONS</h2>
-                </div>
-                <div style="font-size: 0.75rem; opacity: 0.7;">
-                    /// AFTER WORK CREATIVE
-                </div>
+                <h2>COLLECTIONS</h2>
             </div>
-            <div class="file-tab" style="top: 340px;"><span>COLLECTIONS</span></div>
+            <div class="file-tab"><span>COLLECTIONS</span></div>
         </div>
 
     </div>
