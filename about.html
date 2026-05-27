@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ABOUT ME</title>
     <style>
-        /* 1. 基礎設定：全螢幕滿版與純黑底色 */
+        /* 1. 全域與字體設定 */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body, html {
             width: 100%;
             height: 100%;
             background-color: #0c0b0a;
-            /* 100% 還原截圖中的極簡打字機字體 */
+            /* 100% 還原打字機極簡字體 */
             font-family: 'Courier New', Courier, monospace;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -19,7 +19,7 @@
             overflow: hidden;
         }
 
-        /* 2. 背景圖片導入與 555/666 高反差質感調配 */
+        /* 2. 背景圖片佈局 (電腦版) */
         .collage-background {
             position: fixed;
             top: 0;
@@ -30,18 +30,17 @@
             overflow: hidden;
         }
 
-        /* 滿版主背景：my01.jpg */
+        /* 滿版主背景：my01 */
         .bg-my01 {
             position: absolute;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* 555 風格的高反差、低亮度底片感 */
             filter: grayscale(100%) contrast(150%) brightness(45%);
             z-index: 1;
         }
 
-        /* 疊加背景：my03.jpg 偏置拼貼 */
+        /* 疊加老照片：my03 */
         .bg-my03 {
             position: absolute;
             right: 8%;
@@ -54,7 +53,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* 3. 文字圖層：直接、赤裸地浮動在背景圖片 my01 和 my03 上面 */
+        /* 3. 文字圖層佈局 (電腦版) */
         .content-layer {
             position: relative;
             z-index: 3;
@@ -67,7 +66,7 @@
             box-sizing: border-box;
         }
 
-        /* 一句話帶過介紹 */
+        /* 頂部介紹 */
         .header-intro {
             font-size: 14px;
             letter-spacing: 2px;
@@ -80,7 +79,7 @@
             flex-grow: 1;
         }
 
-        /* 使用 pre 標籤完美咬合截圖的字體大小與行高，問號不再巨大 */
+        /* 內文與問號字體大小 */
         pre {
             font-family: 'Courier New', Courier, monospace;
             font-size: 13px; 
@@ -89,7 +88,15 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* 4. 左下角極簡返回箭頭 ↖ */
+        /* 🔥 調整 EDUCATION 和 INTERNSHIP 的字體大一點點 */
+        .section-title {
+            font-size: 16px; 
+            font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        /* 左下角返回箭頭 */
         .back-link {
             position: fixed;
             bottom: 60px;
@@ -102,6 +109,45 @@
         }
         .back-link:hover {
             color: #ffffff;
+        }
+
+        /* ===================================================
+           📱 4. 核心修正：手機端（RWD 響應式變形防護）
+           =================================================== */
+        @media (max-width: 768px) {
+            /* 縮小手機端四周留白，防止橫向空間不足導致文字強制換行換位 */
+            .content-layer {
+                padding: 40px 30px; 
+            }
+            
+            .header-intro {
+                font-size: 13px;
+                margin-bottom: 40px;
+            }
+
+            /* 手機端大字體等比例微調，視覺更精緻 */
+            .section-title {
+                font-size: 15px; 
+            }
+
+            pre {
+                font-size: 12px;
+                line-height: 1.7;
+            }
+
+            /* 修正 my03 老照片在手機直向螢幕上的比例，防止它縮成一條細線 */
+            .bg-my03 {
+                width: 55%;
+                height: 38%;
+                right: 5%;
+                bottom: 12%;
+            }
+
+            /* 確保手機端返回鍵的位置與上方文字左側完美對齊 */
+            .back-link {
+                bottom: 40px;
+                left: 30px; 
+            }
         }
     </style>
 </head>
@@ -120,10 +166,10 @@
 
         <div class="dossier-data">
 <pre>
-EDUCATION
+<span class="section-title">EDUCATION</span>
 ?
 
-INTERNSHIP
+<span class="section-title">INTERNSHIP</span>
 ?
 </pre>
         </div>
