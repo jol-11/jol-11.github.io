@@ -1,1 +1,136 @@
-<h1>這是 ABOUT ME 頁面</h1><a href="index.html">返回主頁</a>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABOUT ME</title>
+    <style>
+        /* 1. 基礎設定：全螢幕滿版與純黑底色 */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #0c0b0a;
+            /* 100% 還原截圖中的極簡打字機字體 */
+            font-family: 'Courier New', Courier, monospace;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* 2. 背景圖片導入與 555/666 高反差質感調配 */
+        .collage-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* 滿版主背景：my01.jpg */
+        .bg-my01 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 555 風格的高反差、低亮度底片感 */
+            filter: grayscale(100%) contrast(150%) brightness(45%);
+            z-index: 1;
+        }
+
+        /* 疊加背景：my03.jpg 偏置拼貼 */
+        .bg-my03 {
+            position: absolute;
+            right: 8%;
+            bottom: 8%;
+            width: 32%;
+            height: 55%;
+            object-fit: cover;
+            filter: grayscale(100%) contrast(130%) brightness(35%);
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* 3. 文字圖層：直接、赤裸地浮動在背景圖片 my01 和 my03 上面 */
+        .content-layer {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            box-sizing: border-box;
+        }
+
+        /* 一句話帶過介紹 */
+        .header-intro {
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+        }
+
+        .dossier-data {
+            flex-grow: 1;
+        }
+
+        /* 使用 pre 標籤完美咬合截圖的字體大小與行高，問號不再巨大 */
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px; 
+            line-height: 1.8;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* 4. 左下角極簡返回箭頭 ↖ */
+        .back-link {
+            position: fixed;
+            bottom: 60px;
+            left: 80px;
+            z-index: 4;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="collage-background">
+        <img src="my01.jpg" class="bg-my01" alt="Background Core Eye">
+        <img src="my03.jpg" class="bg-my03" alt="Background Layer Forest">
+    </div>
+
+    <div class="content-layer">
+        
+        <div class="header-intro">
+            Jol.CHU 08 HK
+        </div>
+
+        <div class="dossier-data">
+<pre>
+EDUCATION
+?
+
+INTERNSHIP
+?
+</pre>
+        </div>
+
+    </div>
+
+    <a href="index.html" class="back-link">↖</a>
+
+</body>
+</html>
