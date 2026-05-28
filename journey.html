@@ -191,8 +191,11 @@
         });
         const markers = [];
         const pinData = [
-            { name: "HONG KONG", lat: 22.4, lng: 110.8, isHome: true, desc: "[ HOME BASE ]<br>記憶與起點。", link: "journey/hongkong.html" },
-            { name: "AUSTRIA", lat: 47, lng: 210, isHome: false, desc: "[ TRACK__01 ]<br>音樂、雪山與金色黃昏。", link: "journey/austria.html" }
+            { name: "HONG KONG", lat: 22.4, lng: 110.8, isHome: true, desc: "[ HOME BASE ]<br>起點", link: "journey/hongkong.html" },
+            { name: "AUSTRIA", lat: 47, lng: 211, isHome: false, desc: "[ TRACK__01 ]<br>音樂、雪山與金色黃昏", link: "journey/austria.html" },
+            { name: "ICELAND", lat: 65, lng: 243.7, isHome: false, desc: "[ TRACK__02 ]<br>白色的夢", link: "journey/iceland.html" },
+            { name: "SWITZERLAND", lat: 47.48, lng: 216.7, isHome: false, desc: "[ TRACK__03 ]<br>阿爾卑斯山", link: "journey/switzerland.html" },
+            { name: "SAN FRANCISCO", lat: 37.8, lng:-12, isHome: false, desc: "[ TRACK__04 ]<br>SF", link: "journey/sanfrancisco.html" }
         ];
         pinData.forEach(data => {
             const pinGroup = new THREE.Group();
@@ -233,18 +236,15 @@
             if (!data.isHome) pinGroup.rotateX(Math.PI / 2);
             earth.add(pinGroup);
         });
-
-        // ==================== 手機 + 電腦通用點擊處理（已修改） ====================
+        // ==================== 手機 + 電腦通用點擊處理 ====================
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         const popup = document.getElementById('popup');
-
         function handleInteraction(clientX, clientY) {
             mouse.x = (clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(markers, true);
-
             if (intersects.length > 0) {
                 const hit = intersects[0].object.userData;
                 popup.style.display = 'block';
@@ -259,26 +259,20 @@
                 autoRotate = true;
             }
         }
-
-        // 電腦滑鼠
         window.addEventListener('click', (e) => {
             if (e.target.closest('#popup')) return;
             handleInteraction(e.clientX, e.clientY);
         });
-
-        // 手機觸控（核心修復）
         window.addEventListener('touchend', (e) => {
             if (e.changedTouches.length === 0) return;
             if (e.target.closest('#popup')) return;
             const t = e.changedTouches[0];
             handleInteraction(t.clientX, t.clientY);
         });
-
         let autoRotate = true;
         const tempV = new THREE.Vector3();
         controls.addEventListener('start', () => autoRotate = false);
         controls.addEventListener('end', () => autoRotate = true);
-
         function animate() {
             requestAnimationFrame(animate);
             if (autoRotate) earth.rotation.y += 0.0012;
@@ -301,7 +295,6 @@
             renderer.render(scene, camera);
         }
         animate();
-
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
