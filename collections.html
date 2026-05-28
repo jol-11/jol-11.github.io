@@ -21,25 +21,25 @@
 
         /* 2. 頂部導航：極簡、小字 */
         nav {
-            padding: 40px 50px;
+            padding: 50px 60px;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
         }
 
         .nav-brand {
-            font-size: 1.1rem;
+            font-size: 1rem;
             letter-spacing: 4px;
             text-decoration: none;
             color: #ffffff;
-            opacity: 0.9;
+            opacity: 0.8;
         }
 
         .nav-back {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             letter-spacing: 2px;
             text-decoration: none;
-            color: rgba(213, 201, 185, 0.5);
+            color: rgba(213, 201, 185, 0.4);
             transition: color 0.3s;
         }
 
@@ -47,29 +47,18 @@
             color: #ffffff;
         }
 
-        /* 3. 頁面標題：保留在上方，縮小尺寸 */
-        header {
-            padding: 0 50px 50px 50px;
-        }
-
-        header h1 {
-            font-size: 1.2rem;
-            font-weight: normal;
-            letter-spacing: 5px;
-            margin: 0;
-            opacity: 0.8;
-        }
-
-        /* 4. 作品分區標題 */
+        /* 3. 頁面內容容器：縮小寬度以提升精緻感 */
         .section-container {
-            padding: 0 50px 100px 50px;
+            max-width: 1100px; /* 限制整體寬度，防止圖片在寬螢幕過大 */
+            margin: 0 auto;
+            padding: 0 60px 100px 60px;
         }
 
         .category-title {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             letter-spacing: 3px;
-            color: rgba(213, 201, 185, 0.6);
-            margin-bottom: 40px;
+            color: rgba(213, 201, 185, 0.5);
+            margin-bottom: 50px;
             display: flex;
             align-items: center;
         }
@@ -82,52 +71,47 @@
             margin-left: 20px;
         }
 
-        /* 5. 攝影作品網格：高反差黑白質感 */
+        /* 4. 攝影作品網格：增加間距，縮小圖片佔比 */
         .photo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            gap: 60px;
-            margin-bottom: 80px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 縮小單張圖片最小寬度 */
+            gap: 80px; /* 增加留白感 */
+            margin-bottom: 100px;
         }
 
         .photo-item {
             position: relative;
-            background-color: #0c0b0a;
+            transition: opacity 0.4s ease;
+        }
+
+        .photo-item:hover {
+            opacity: 0.8; /* 懸停時輕微變淡，代替濾鏡效果 */
         }
 
         .photo-item img {
             width: 100%;
             display: block;
-            /* 預設維持高反差黑白/低飽和，鼠標懸停恢復 */
-            filter: grayscale(100%) contrast(1.1) brightness(0.8);
-            transition: all 0.6s ease;
+            filter: none; /* 取消所有濾鏡，直接運用原圖 */
         }
 
-        .photo-item:hover img {
-            filter: grayscale(0%) contrast(1) brightness(1);
-        }
-
-        /* 作品說明文字：Portra 160 2023 */
+        /* 作品說明文字 */
         .photo-info {
             padding: 15px 0;
-            font-size: 0.65rem;
-            color: rgba(213, 201, 185, 0.35);
-            letter-spacing: 1px;
+            font-size: 0.6rem;
+            color: rgba(213, 201, 185, 0.3);
+            letter-spacing: 1.5px;
             text-transform: uppercase;
         }
 
-        /* 6. 📱 手機端自適應 */
+        /* 5. 📱 手機端自適應 */
         @media (max-width: 768px) {
-            nav { padding: 30px 30px; }
-            header { padding: 0 30px 40px 30px; }
+            nav { padding: 40px 30px; }
             .section-container { padding: 0 30px 60px 30px; }
             .photo-grid {
-                grid-template-columns: 1fr; /* 手機端單欄排列，防止位移 */
-                gap: 40px;
+                grid-template-columns: 1fr; /* 手機端單欄 */
+                gap: 50px;
             }
-            .nav-brand { font-size: 1rem; }
-            header h1 { font-size: 1.1rem; }
-            .photo-item img { filter: none; } /* 手機端取消濾鏡以保證流暢 */
+            .nav-brand { font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -138,65 +122,55 @@
         <a href="index.html" class="nav-back">↖ RETURN TO CABINET</a>
     </nav>
 
-    <header>
-        <h1>COLLECTIONS</h1>
-    </header>
-
     <main class="section-container">
         
         <!-- FILM SECTION -->
-        <div class="category-title">FILM PHOTOGRAPHY / PORTRA 160</div>
+        <div class="category-title">FILM ARCHIVE</div>
         
         <div class="photo-grid">
             
             <!-- 作品 02 -->
             <div class="photo-item">
-                <img src="collections/film02.jpg" alt="Portra 160 Work 02">
-                <div class="photo-info">REF_02 / PORTRA 160 / 2023</div>
+                <img src="collections/film02.jpg" alt="Archive 02">
+                <div class="photo-info">INDEX_01 / PORTRA 160 / 2023 </div>
             </div>
 
             <!-- 作品 03 -->
             <div class="photo-item">
-                <img src="collections/film03.jpg" alt="Portra 160 Work 03">
-                <div class="photo-info">REF_03 / PORTRA 160 / 2023</div>
+                <img src="collections/film03.jpg" alt="Archive 03">
+                <div class="photo-info">INDEX_02 / PORTRA 160 / 2023 </div>
             </div>
 
-            <!-- 作品 94 -->
+            <!-- 作品 04 (修正原 94) -->
             <div class="photo-item">
-                <img src="collections/film94.jpg" alt="Portra 160 Work 94">
-                <div class="photo-info">REF_94 / PORTRA 160 / 2023</div>
+                <img src="collections/film04.jpg" alt="Archive 04">
+                <div class="photo-info">INDEX_03 / PORTRA 160 / 2023 </div>
             </div>
 
             <!-- 作品 05 -->
             <div class="photo-item">
-                <img src="collections/film05.jpg" alt="Portra 160 Work 05">
-                <div class="photo-info">REF_05 / PORTRA 160 / 2023</div>
+                <img src="collections/film05.jpg" alt="Archive 05">
+                <div class="photo-info">INDEX_04 / PORTRA 160 / 2023 </div>
             </div>
 
-            <!-- 作品 06 -->
+            <!-- 作品 07 (已跳過 06) -->
             <div class="photo-item">
-                <img src="collections/film06.jpg" alt="Portra 160 Work 06">
-                <div class="photo-info">REF_06 / PORTRA 160 / 2023</div>
-            </div>
-
-            <!-- 作品 07 -->
-            <div class="photo-item">
-                <img src="collections/film07.jpg" alt="Portra 160 Work 07">
-                <div class="photo-info">REF_07 / PORTRA 160 / 2023</div>
+                <img src="collections/film07.jpg" alt="Archive 07">
+                <div class="photo-info">INDEX_05 / PORTRA 160 / 2023 </div>
             </div>
 
         </div>
 
-        <!-- DIGITAL SECTION (目前為空，保留位置) -->
+        <!-- DIGITAL SECTION -->
         <div class="category-title">DIGITAL ARCHIVE</div>
-        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.1); letter-spacing: 2px;">
-            [ STANDBY - DATA PENDING ]
+        <div style="font-size: 0.6rem; color: rgba(213,201,185,0.15); letter-spacing: 2px; padding-left: 5px;">
+            [ SYSTEM_STATUS: PENDING_UPDATE ]
         </div>
 
     </main>
 
-    <footer style="padding: 60px 0; text-align: center; font-size: 0.6rem; color: rgba(213,201,185,0.15); letter-spacing: 2px;">
-        © JOL CHU / 2024-2026
+    <footer style="padding: 80px 0; text-align: center; font-size: 0.55rem; color: rgba(213,201,185,0.1); letter-spacing: 3px;">
+        © JOL CHU / ALL RIGHTS RESERVED
     </footer>
 
 </body>
