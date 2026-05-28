@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COLLECTIONS | JOL CHU</title>
+    <title>COLLECTIONS | COLLECTIONS </title>
     <style>
         /* 1. 全局設定：純黑底、打字機字體、無粗體 */
         body {
@@ -14,12 +14,12 @@
             background-size: 4px 4px;
             font-family: 'Courier New', Courier, monospace;
             color: #ffffff;
-            font-weight: normal; /* 全局禁止粗體 */
+            font-weight: normal; 
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* 2. 頂部導航：極簡、小字 */
+        /* 2. 頂部導航 */
         nav {
             padding: 50px 60px;
             display: flex;
@@ -47,9 +47,9 @@
             color: #ffffff;
         }
 
-        /* 3. 頁面內容容器：縮小寬度以提升精緻感 */
+        /* 3. 頁面內容容器 */
         .section-container {
-            max-width: 1100px; /* 限制整體寬度，防止圖片在寬螢幕過大 */
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 60px 100px 60px;
         }
@@ -71,11 +71,11 @@
             margin-left: 20px;
         }
 
-        /* 4. 攝影作品網格：增加間距，縮小圖片佔比 */
+        /* 4. 攝影作品網格 */
         .photo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 縮小單張圖片最小寬度 */
-            gap: 80px; /* 增加留白感 */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 80px;
             margin-bottom: 100px;
         }
 
@@ -85,16 +85,15 @@
         }
 
         .photo-item:hover {
-            opacity: 0.8; /* 懸停時輕微變淡，代替濾鏡效果 */
+            opacity: 0.8;
         }
 
         .photo-item img {
             width: 100%;
             display: block;
-            filter: none; /* 取消所有濾鏡，直接運用原圖 */
         }
 
-        /* 作品說明文字 */
+        /* 5. 作品說明文字與獲獎連結 */
         .photo-info {
             padding: 15px 0;
             font-size: 0.6rem;
@@ -103,12 +102,30 @@
             text-transform: uppercase;
         }
 
-        /* 5. 📱 手機端自適應 */
+        .award-info {
+            display: block;
+            margin-top: 5px;
+            color: rgba(213, 201, 185, 0.6);
+        }
+
+        .award-link {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(213, 201, 185, 0.2);
+            transition: all 0.3s;
+        }
+
+        .award-link:hover {
+            color: #ffffff;
+            border-bottom-color: #ffffff;
+        }
+
+        /* 📱 手機端自適應 */
         @media (max-width: 768px) {
             nav { padding: 40px 30px; }
             .section-container { padding: 0 30px 60px 30px; }
             .photo-grid {
-                grid-template-columns: 1fr; /* 手機端單欄 */
+                grid-template-columns: 1fr;
                 gap: 50px;
             }
             .nav-brand { font-size: 0.9rem; }
@@ -124,36 +141,38 @@
 
     <main class="section-container">
         
-        <!-- FILM SECTION -->
         <div class="category-title">FILM ARCHIVE</div>
         
         <div class="photo-grid">
             
-            <!-- 作品 02 -->
             <div class="photo-item">
                 <img src="collections/film02.jpg" alt="Archive 02">
                 <div class="photo-info">INDEX_01 / PORTRA 160 / 2023 </div>
             </div>
 
-            <!-- 作品 03 -->
             <div class="photo-item">
                 <img src="collections/film03.jpg" alt="Archive 03">
                 <div class="photo-info">INDEX_02 / PORTRA 160 / 2023 </div>
             </div>
 
-            <!-- 作品 04 (修正原 94) -->
+            <!-- FILM04: VIEPA 2025 HONORABLE MENTION -->
             <div class="photo-item">
                 <img src="collections/film04.jpg" alt="Archive 04">
-                <div class="photo-info">INDEX_03 / PORTRA 160 / 2023 </div>
+                <div class="photo-info">
+                    INDEX_03 / PORTRA 160 / 2023 
+                    <span class="award-info">
+                        [*] VIEPA 2025 HONORABLE MENTION / STUDENTS AWARD 
+                        <a href="https://www.fotofestival-wien.com/student-winners-viepa-2025" target="_blank" class="award-link">[SITE]</a>
+                        <a href="collections/certificate_viepa2025.pdf" target="_blank" class="award-link">[CERT]</a>
+                    </span>
+                </div>
             </div>
 
-            <!-- 作品 05 -->
             <div class="photo-item">
                 <img src="collections/film05.jpg" alt="Archive 05">
                 <div class="photo-info">INDEX_04 / PORTRA 160 / 2023 </div>
             </div>
 
-            <!-- 作品 07 (已跳過 06) -->
             <div class="photo-item">
                 <img src="collections/film07.jpg" alt="Archive 07">
                 <div class="photo-info">INDEX_05 / PORTRA 160 / 2023 </div>
@@ -161,7 +180,6 @@
 
         </div>
 
-        <!-- DIGITAL SECTION -->
         <div class="category-title">DIGITAL ARCHIVE</div>
         <div style="font-size: 0.6rem; color: rgba(213,201,185,0.15); letter-spacing: 2px; padding-left: 5px;">
             [ SYSTEM_STATUS: PENDING_UPDATE ]
@@ -170,7 +188,7 @@
     </main>
 
     <footer style="padding: 80px 0; text-align: center; font-size: 0.55rem; color: rgba(213,201,185,0.1); letter-spacing: 3px;">
-        © JOL CHU / ALL RIGHTS RESERVED
+        © JOLINE CHU / ALL RIGHTS RESERVED
     </footer>
 
 </body>
