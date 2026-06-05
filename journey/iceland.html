@@ -35,12 +35,12 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 2. 頂部滿版 Hero 區域（參考 image_b4d46c.jpg 的高反差融合設計） */
+        /* 2. 頂部滿版 Hero 區域（已修復圖片路徑，讓冰川完美襯托大字） */
         .hero-section {
             position: relative;
             width: 100%;
             height: 100vh;
-            background: linear-gradient(to bottom, rgba(10,11,13,0.4) 0%, rgba(10,11,13,0.1) 50%, var(--color-light) 100%), 
+            background: linear-gradient(to bottom, rgba(10,11,13,0.3) 0%, rgba(10,11,13,0.1) 50%, var(--color-light) 100%), 
                         url('image/DSC02729_VSCO.jpg') no-repeat center center;
             background-size: cover;
             display: flex;
@@ -132,7 +132,7 @@
             color: var(--color-dark);
         }
 
-        /* 3. 路線地圖概念區（精緻轉折，呼應 image_b4d46c.jpg 核心排版） */
+        /* 3. 路線地圖概念區 */
         .route-intro-section {
             padding: 120px 10% 80px 10%;
             max-width: 1400px;
@@ -157,7 +157,6 @@
             margin-bottom: 40px;
         }
 
-        /* 抽象冰島路線圖樣式 */
         .route-map-container {
             position: relative;
             background: #ffffff;
@@ -177,7 +176,7 @@
             opacity: 0.8;
         }
 
-        /* 4. 雜誌感故事網格（高級非對稱編排） */
+        /* 4. 雜誌感故事網格 */
         .story-container {
             max-width: 1300px;
             margin: 0 auto;
@@ -196,13 +195,18 @@
             padding-bottom: 10px;
         }
 
-        /* 區塊一：車窗外的大地 */
-        .layout-arrival {
+        /* 通用非對稱兩欄佈局 */
+        .layout-arrival, .layout-ice-single {
             display: grid;
             grid-template-columns: 1.6fr 1.4fr;
             gap: 80px;
             align-items: center;
             margin-bottom: 150px;
+        }
+
+        /* 讓第三章的圖文順序調換，形成錯落有致的視覺感 */
+        .layout-ice-single {
+            grid-template-columns: 1.4fr 1.6fr;
         }
 
         .img-wrapper img {
@@ -238,18 +242,6 @@
         .layout-waterfall .text-content {
             max-width: 600px;
             margin: 0 auto;
-        }
-
-        /* 區塊三：冰與沙的極限對比（雙圖交錯並置） */
-        .layout-ice-duo {
-            display: grid;
-            grid-template-columns: 1.3fr 1.7fr;
-            gap: 60px;
-            margin-bottom: 150px;
-        }
-
-        .layout-ice-duo .left-col {
-            margin-top: 60px;
         }
 
         /* 區塊四：垂直孤獨感 */
@@ -301,7 +293,7 @@
             letter-spacing: 2px;
         }
 
-        /* 📱 流暢的手機端響應式重排 */
+        /* 📱 手機端響應式重排 */
         @media (max-width: 992px) {
             nav { padding: 30px; }
             .route-intro-section {
@@ -309,18 +301,17 @@
                 gap: 50px;
                 padding-top: 80px;
             }
-            .layout-arrival, .layout-ice-duo, .layout-vertical-scale, .layout-cultural {
+            .layout-arrival, .layout-ice-single, .layout-vertical-scale, .layout-cultural {
                 grid-template-columns: 1fr;
                 gap: 40px;
             }
-            .layout-ice-duo .left-col { margin-top: 0; }
             .layout-cultural { padding: 30px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- HERO SECTION: 頂部滿版意境（底圖使用冰川景緻：DSC02729_VSCO.jpg） -->
+    <!-- HERO SECTION: 頂部滿版意境（已修正路徑，完美載入冰川遠景圖作為 Iceland 大字背景） -->
     <div class="hero-section">
         <nav>
             <a href="index.html" class="nav-logo">JOL CHU</a>
@@ -337,7 +328,7 @@
         </div>
     </div>
 
-    <!-- MAP & INTRO SECTION (完全致敬 image_b4d46c.jpg 的導覽佈局) -->
+    <!-- MAP & INTRO SECTION -->
     <section class="route-intro-section" id="begin-journey">
         <div class="route-header">
             <span class="chapter-title">Overview</span>
@@ -345,14 +336,10 @@
             <p>橫跨荒涼的火山苔原與靜謐的晶瑩海岸，這不只是一場地理位移，而是一次將感官完全剝離、重新歸零的內省之旅。在這裡，時間被凍結，光影被拉長。</p>
         </div>
         
-        <!-- 路線地圖區：呼應參考圖，使用乾淨線條抽象呈現冰島島嶼與標記點 -->
         <div class="route-map-container">
             <svg class="map-placeholder-svg" viewBox="0 0 500 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- 抽象化島嶼輪廓線 -->
                 <path d="M50 150 C80 110, 150 90, 220 100 C290 110, 380 70, 430 110 C480 150, 450 220, 400 240 C320 260, 200 230, 130 250 C80 260, 30 200, 50 150 Z" stroke="#7A828A" stroke-width="1.5" stroke-dasharray="4 4"/>
-                <!-- 旅程行進虛線軌跡 -->
                 <path d="M120 225 Q 180 140, 290 120 T 390 195" stroke="#2C3033" stroke-width="2" id="route-line"/>
-                <!-- 地點標記點 -->
                 <circle cx="120" cy="225" r="5" fill="#2C3033" />
                 <text x="100" y="210" font-family="Space Mono" font-size="10" fill="#7A828A">Reykjavík</text>
                 
@@ -392,28 +379,15 @@
             </div>
         </section>
 
-        <!-- 篇章三：冰與沙的解構 (DSC02729_VSCO.jpg & IMG_0687.jpg) -->
-        <section>
-            <span class="chapter-title">Chapter III / Anatomy of Ice</span>
-            <div class="layout-ice-duo">
-                <div class="left-col">
-                    <div class="img-wrapper" style="margin-bottom: 30px;">
-                        <img src="image/IMG_0687.jpg" alt="Standing among Crystal Ice Elements">
-                    </div>
-                    <div class="text-block-narrative">
-                        <h3>黑沙灘上的歲月碎屑</h3>
-                        <p>擱淺在黑色晶體沙灘上的冰塊，宛如散落一地的永恆靜物。每一步行走，都是在跨越由上萬年歷史凝聚而成的水晶矩陣。</p>
-                    </div>
-                </div>
-                <div class="right-col">
-                    <div class="img-wrapper" style="margin-bottom: 40px;">
-                        <img src="image/DSC02729_VSCO.jpg" alt="Vast Glacier Lagoon Horizon">
-                    </div>
-                    <div class="text-block-narrative">
-                        <h3>遠方的冰川地平線</h3>
-                        <p>遠處巨大的白藍色冰川山脈綿延，人群在浩瀚的冰原邊緣縮小成微不足道的黑點。冷冽的空氣裡只有冰層細微碎裂的嘆息聲。</p>
-                    </div>
-                </div>
+        <!-- 篇章三：冰與沙的解構 (已移除重複的遠方冰川照片，重構為精緻的黑沙灘單圖排版) -->
+        <section class="layout-ice-single">
+            <div class="text-block-narrative">
+                <span class="chapter-title">Chapter III / Anatomy of Ice</span>
+                <h3>黑沙灘上的歲月碎屑</h3>
+                <p>擱淺在黑色晶體沙灘上的冰塊，宛如散落一地的永恆靜物。每一步行走，都是在跨越由上萬年歷史凝聚而成的水晶矩陣。</p>
+            </div>
+            <div class="img-wrapper">
+                <img src="image/IMG_0687.jpg" alt="Standing among Crystal Ice Elements">
             </div>
         </section>
 
@@ -437,7 +411,7 @@
                     <div class="img-wrapper" style="margin-bottom: 25px;">
                         <img src="image/DSC02304_VSCO.JPG" alt="Swans and Waterfowls in Sunlit Water">
                     </div>
-                    <p style="font-size: 0.9rem; color: var(--color-muted);">雷克雅維克湖畔耀眼的冬日暖陽，與成群天鵝激起粼粼波光。</p>
+                    <p style="font-size: 0.9rem; color: var(--color-muted);">雷克雅維克湖畔冬日，成群天鵝激起粼粼波光。</p>
                 </div>
                 <div>
                     <div class="img-wrapper" style="margin-bottom: 25px;">
