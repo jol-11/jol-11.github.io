@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ICELAND — MY JOURNEY</title>
-    <!-- 引入高階社論感的歐文字體與乾淨的內文字體 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
@@ -64,6 +63,7 @@
             letter-spacing: 6px;
             color: #ffffff;
             text-decoration: none;
+            cursor: default; /* 讓滑鼠游標維持一般狀態，不顯示點擊手勢 */
         }
 
         .nav-links {
@@ -311,12 +311,11 @@
 </head>
 <body>
 
-    <!-- HERO SECTION: 頂部滿版意境（已修正路徑，完美載入冰川遠景圖作為 Iceland 大字背景） -->
     <div class="hero-section">
         <nav>
-            <a href="index.html" class="nav-logo">JOL CHU</a>
+            <span class="nav-logo">JOL CHU</span>
             <div class="nav-links">
-                <a href="#" class="active">MY JOURNEY</a>
+                <a href="https://jol-11.github.io/journey.html" class="active">MY JOURNEY</a>
             </div>
         </nav>
 
@@ -327,7 +326,6 @@
         </div>
     </div>
 
-    <!-- MAP & INTRO SECTION -->
     <section class="route-intro-section" id="begin-journey">
         <div class="route-header">
             <span class="chapter-title">Overview</span>
@@ -351,10 +349,8 @@
         </div>
     </section>
 
-    <!-- JOURNAL STORY BLOCKS -->
     <main class="story-container">
 
-        <!-- 篇章一：移動的邊界 (IMG_0261_VSCO.jpg) -->
         <section class="layout-arrival">
             <div class="img-wrapper">
                 <img src="image/IMG_0261_VSCO.JPG" alt="Moving Through Snowy Peaks">
@@ -366,7 +362,6 @@
             </div>
         </section>
 
-        <!-- 篇章二：凍結的光譜 (FullSizeRender_VSCO.jpg) -->
         <section class="layout-waterfall">
             <span class="chapter-title">Chapter II / Frozen Spectrum</span>
             <div class="img-wrapper">
@@ -378,7 +373,6 @@
             </div>
         </section>
 
-        <!-- 篇章三：冰與沙的解構 (已移除重複的遠方冰川照片，重構為精緻的黑沙灘單圖排版) -->
         <section class="layout-ice-single">
             <div class="text-block-narrative">
                 <span class="chapter-title">Chapter III / Ice</span>
@@ -390,7 +384,6 @@
             </div>
         </section>
 
-        <!-- 篇章四：視界的執念 (71086267-eeb1-44e2-988b-a4d3bd08ecf2.jpg) -->
         <section class="layout-vertical-scale">
             <div class="text-block-narrative">
                 <span class="chapter-title">Chapter IV / Mountains</span>
@@ -402,7 +395,6 @@
             </div>
         </section>
 
-        <!-- 篇章五：城市的溫度 (DSC02304_VSCO.jpg & 8D489C5C-D066-46B6-9D9E-48A67C1D403B.jpg) -->
         <section>
             <span class="chapter-title">Chapter V / Cultural Stillness</span>
             <div class="layout-cultural">
@@ -424,7 +416,6 @@
 
     </main>
 
-    <!-- FOOTER SECTION -->
     <footer>
         <div class="footer-logo">ICELAND</div>
         <p style="font-family: var(--font-serif); font-size: 1.1rem; opacity: 0.7; font-style: italic;">2024·April</p>
